@@ -33,3 +33,21 @@ Start the iOS app:
 ```
 react-native start ios
 ```
+
+## Troubleshooting (iOS)
+
+- [RuntimeError - [Xcodeproj] Unknown object version.](https://github.com/CocoaPods/CocoaPods/issues/7697)
+
+    ```
+    cd ios
+    gem update xcodeproj
+    gem install cocoapods --pre
+    ```
+
+- [You don't have write permissions for the /Library/Ruby/Gems/2.6.0 directory](https://github.com/rbenv/rbenv/issues/1267)
+    ```
+    cd ios
+    export GEM_HOME="$HOME/.gem"
+    gem update xcodeproj
+    gem install cocoapods --pre
+    ```

@@ -4,7 +4,7 @@
 
 Poject for the Ford Smart Vehicle Connectivity Challenge [https://fordsmart.devpost.com/](https://fordsmart.devpost.com/)
 
-## Requirements
+## Requirements (iOS)
 
 - Xcode (sign the project if necessary)
 - yarn
@@ -12,7 +12,7 @@ Poject for the Ford Smart Vehicle Connectivity Challenge [https://fordsmart.devp
 - React Native CLI
 - Refer to 'React Native CLI Quickstart' [https://archive.reactnative.dev/docs/getting-started](https://archive.reactnative.dev/docs/getting-started)
 
-## Get Started
+## Getting Started (iOS)
 
 Install Node dependencies: 
 

@@ -10,7 +10,7 @@ Poject for the Ford Smart Vehicle Connectivity Challenge [https://fordsmart.devp
 - yarn
 - node
 - React Native CLI
-- [https://archive.reactnative.dev/docs/getting-started](https://archive.reactnative.dev/docs/getting-started)
+- Refer to 'React Native CLI Quickstart' [https://archive.reactnative.dev/docs/getting-started](https://archive.reactnative.dev/docs/getting-started)
 
 ## Get Started
 

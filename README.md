@@ -6,7 +6,7 @@ Poject for the Ford Smart Vehicle Connectivity Challenge [https://fordsmart.devp
 
 ## Requirements (iOS)
 
-- Xcode (sign the project if necessary)
+- Xcode (sign the project in the 'iOS' folder if necessary)
 - yarn
 - node
 - React Native CLI

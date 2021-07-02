@@ -2,7 +2,15 @@
 
 ## About
 
-Poject for the Ford Smart Vehicle Connectivity Challenge (https://fordsmart.devpost.com/)[https://fordsmart.devpost.com/]
+Poject for the Ford Smart Vehicle Connectivity Challenge [https://fordsmart.devpost.com/](https://fordsmart.devpost.com/)
+
+## Requirements
+
+- Xcode
+- yarn
+- node
+- React Native CLI
+- [https://archive.reactnative.dev/docs/getting-started](https://archive.reactnative.dev/docs/getting-started)
 
 ## Get Started
 

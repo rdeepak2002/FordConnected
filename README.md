@@ -4,9 +4,9 @@
 
 Deepak Ramalingam
 
-[Website](https://rdeepak2002.github.io/home)
-
 [Email](mailto:rdeepak2002@gmail.com)
+
+[Website](https://rdeepak2002.github.io/home)
 
 ## About
 

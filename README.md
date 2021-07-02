@@ -1,8 +1,16 @@
 # Ford Connected
 
+## Author
+
+Deepak Ramalingam
+
+[Website](https://rdeepak2002.github.io/home)
+
+[Email](mailto:rdeepak2002@gmail.com)
+
 ## About
 
-Poject for the Ford Smart Vehicle Connectivity Challenge [https://fordsmart.devpost.com/](https://fordsmart.devpost.com/)
+Hackathon project for the [Ford Smart Vehicle Connectivity Challenge](https://fordsmart.devpost.com/)
 
 ## Requirements (iOS)
 

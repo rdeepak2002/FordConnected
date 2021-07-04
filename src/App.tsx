@@ -13,7 +13,6 @@ import styles from './app/styles/styles';
 import GetStartedView from './app/components/GetStartedView';
 import FeedView from './app/components/FeedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import View from 'react-native-gesture-handler/lib/typescript/GestureHandlerRootView';
 
 const Stack = createStackNavigator();
 const AppContext = React.createContext();
@@ -69,26 +68,32 @@ const App: () => Node = () => {
         () => ({
             signIn: async (id: string, username: string, firstName: string, lastName: string, refreshToken: string, accessToken: string, navigation?: any) => {
                 await storeUserSession(id, username, firstName, lastName, refreshToken, accessToken).then(() => {
-                    if (navigation) {
-                        navigation.navigate('feed');
+                    let userSession;
+
+                    try {
+                        userSession = retrieveUserSession();
+                    } catch (e) {
+                        console.error(e);
                     }
+
+                    if (navigation) {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'feed' }],
+                        });
+                    }
+
+                    dispatch({ type: 'SIGN_IN', userSession: userSession });
                 }).catch((error) => {
                     console.error(error);
                 });
-
-                let userSession;
-
-                try {
-                    userSession = await retrieveUserSession();
-                } catch (e) {
-                    console.error(e);
-                }
-
-                dispatch({ type: 'SIGN_IN', userSession: userSession });
             },
             signOut: async (navigation: any) => {
                 await removeUserSession();
-                navigation.navigate('get_started');
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'get_started' }],
+                });
                 dispatch({ type: 'SIGN_OUT' });
             }
         }),
@@ -97,7 +102,7 @@ const App: () => Node = () => {
 
     if (state.isLoading) {
         // We haven't finished checking for the token yet
-        return (<SafeAreaView><Text>loading</Text></SafeAreaView>);
+        return (<SafeAreaView></SafeAreaView>);
     }
 
     return (

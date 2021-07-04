@@ -16,6 +16,8 @@ import { navigateRoot, navigationRef } from './app/components/RootNavigation';
 import { AppearanceProvider } from 'react-native-appearance';
 import { useTheme } from './app/styles/ThemeContext';
 import { ThemeProvider } from './app/styles/ThemeContext';
+import { Provider } from 'react-redux';
+import { store } from './app/redux/store/Store';
 
 const Stack = createStackNavigator();
 const AppContext = React.createContext(undefined);
@@ -117,35 +119,37 @@ const App = () => {
   }
 
   return (
-    <AppearanceProvider>
-      <ThemeProvider>
-        <AuthContext.Provider value={authContext as any}>
-          <NavigationContainer ref={navigationRef} theme={isDark ? DarkTheme : DefaultTheme}>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              {state.userSession == null ? (
-                <>
-                  <Stack.Screen
-                    name={'get_started'}
-                    component={GetStartedViewWrapper}
-                  />
-                  <Stack.Screen name={'login'} component={LoginViewWrapper} />
-                  <Stack.Screen name={'home'} component={HomeViewWrapper} />
-                </>
-              ) : (
-                <>
-                  <Stack.Screen name={'home'} component={HomeViewWrapper} />
-                  <Stack.Screen
-                    name={'get_started'}
-                    component={GetStartedViewWrapper}
-                  />
-                  <Stack.Screen name={'login'} component={LoginViewWrapper} />
-                </>
-              )}
-            </Stack.Navigator>
-          </NavigationContainer>
-        </AuthContext.Provider>
-      </ThemeProvider>
-    </AppearanceProvider>
+    <Provider store={store}>
+      <AppearanceProvider>
+        <ThemeProvider>
+          <AuthContext.Provider value={authContext as any}>
+            <NavigationContainer ref={navigationRef} theme={isDark ? DarkTheme : DefaultTheme}>
+              <Stack.Navigator screenOptions={{ headerShown: false }}>
+                {state.userSession == null ? (
+                  <>
+                    <Stack.Screen
+                      name={'get_started'}
+                      component={GetStartedViewWrapper}
+                    />
+                    <Stack.Screen name={'login'} component={LoginViewWrapper} />
+                    <Stack.Screen name={'home'} component={HomeViewWrapper} />
+                  </>
+                ) : (
+                  <>
+                    <Stack.Screen name={'home'} component={HomeViewWrapper} />
+                    <Stack.Screen
+                      name={'get_started'}
+                      component={GetStartedViewWrapper}
+                    />
+                    <Stack.Screen name={'login'} component={LoginViewWrapper} />
+                  </>
+                )}
+              </Stack.Navigator>
+            </NavigationContainer>
+          </AuthContext.Provider>
+        </ThemeProvider>
+      </AppearanceProvider>
+    </Provider>
   );
 };
 

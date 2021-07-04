@@ -7,8 +7,11 @@ import WebView from 'react-native-webview';
 import { TextInput } from 'react-native-gesture-handler';
 import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setUserSession } from '../../redux/actions/UserSessionActions';
 
-const LoginView = () => {
+const LoginView = (props: any) => {
   const authState = '27252';
   const fordAuthUri = `https://fordconnect.cv.ford.com/common/login/?make=F&application_id=afdc085b-377a-4351-b23e-5e1d35fb3700&client_id=30990062-9618-40e1-a27b-7c6bcb23658a&response_type=code&state=${authState}&redirect_uri=https%3A%2F%2Flocalhost%3A3000&scope=access`;
 
@@ -79,6 +82,8 @@ const LoginView = () => {
       const id = 'someId';
       const accessToken = 'someAccessToken';
 
+      props.setUserSession({ id: id, username: username, firstName: firstName, lastName: lastName, refreshToken: refreshToken, accessToken: accessToken });
+
       signIn(id, username, firstName, lastName, refreshToken, accessToken);
     }
   };
@@ -132,4 +137,15 @@ const LoginView = () => {
   );
 };
 
-export default LoginView;
+const mapStateToProps = (state) => {
+  const { userSession } = state
+  return { userSession }
+};
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    setUserSession,
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginView);

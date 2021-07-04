@@ -4,8 +4,11 @@ import { Button, Text, SafeAreaView, View } from 'react-native';
 import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
+import { connect } from 'react-redux';
+import { setUserSession } from '../../redux/actions/UserSessionActions';
+import { bindActionCreators } from 'redux';
 
-const SettingsView = () => {
+const SettingsView = (props: any) => {
   const { styles } = useTheme();
   const { signOut } = React.useContext(AuthContext);
 
@@ -13,6 +16,8 @@ const SettingsView = () => {
     <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.text}>Settings</Text>
+
+        <Text style={styles.text}>{JSON.stringify(props.userSession)}</Text>
 
         <ThemeToggle />
 
@@ -27,4 +32,9 @@ const SettingsView = () => {
   );
 };
 
-export default SettingsView;
+const mapStateToProps = (state) => {
+  const { userSession } = state
+  return { userSession }
+};
+
+export default connect(mapStateToProps)(SettingsView);

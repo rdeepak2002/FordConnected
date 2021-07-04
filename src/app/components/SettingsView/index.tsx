@@ -4,7 +4,7 @@ import { Button, Text, StyleSheet, SafeAreaView, View, Switch } from 'react-nati
 import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
 
-const SettingsView = () => {
+const SettingsView = (props: { navigation: any }) => {
   const { styles } = useTheme();
   const { signOut } = React.useContext(AuthContext);
 

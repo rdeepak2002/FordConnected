@@ -3,7 +3,7 @@ import React from 'react';
 import {Text, StyleSheet, SafeAreaView, View} from 'react-native';
 import {useTheme} from '../../styles/ThemeContext';
 
-const FeedView = () => {
+const FeedView = (props: { navigation: any }) => {
   const {colors} = useTheme();
 
   const styles = StyleSheet.create({

@@ -4,7 +4,7 @@ import { Text, StyleSheet, SafeAreaView, View } from 'react-native';
 
 import { useTheme } from '../../styles/ThemeContext';
 
-const SearchView = () => {
+const SearchView = (props: { navigation: any }) => {
   const { styles } = useTheme()
 
   return (

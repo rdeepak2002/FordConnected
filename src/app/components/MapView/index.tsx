@@ -3,8 +3,7 @@ import React from 'react';
 import { Text, SafeAreaView, View } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
 
-const MapView = () => {
-  const { colors } = useTheme();
+const MapView = (props: { navigation: any }) => {
   const { styles } = useTheme();
 
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {AppContext} from '../../App';
+import { AppContext } from '../../App';
 
 import GetStartedView from './GetStartedView';
 import HomeView from './HomeView';
@@ -11,41 +11,41 @@ import FeedView from './FeedView';
 import MapView from './MapView';
 import SearchView from './SearchView';
 
-const GetStartedViewWrapper = ({navigation}) => (
+const GetStartedViewWrapper = ({ navigation }) => (
   <AppContext.Consumer>
     {() => <GetStartedView navigation={navigation} />}
   </AppContext.Consumer>
 );
 
-const LoginViewWrapper = ({navigation}) => (
+const LoginViewWrapper = ({ navigation }) => (
   <AppContext.Consumer>
     {() => <LoginView navigation={navigation} />}
   </AppContext.Consumer>
 );
 
-const HomeViewWrapper = ({}) => (
+const HomeViewWrapper = ({ }) => (
   <AppContext.Consumer>{() => <HomeView />}</AppContext.Consumer>
 );
 
-const FeedViewWrapper = ({navigation}) => (
+const FeedViewWrapper = ({ navigation }) => (
   <AppContext.Consumer>
     {() => <FeedView navigation={navigation} />}
   </AppContext.Consumer>
 );
 
-const MapViewWrapper = ({navigation}) => (
+const MapViewWrapper = ({ navigation }) => (
   <AppContext.Consumer>
     {() => <MapView navigation={navigation} />}
   </AppContext.Consumer>
 );
 
-const SearchViewWrapper = ({navigation}) => (
+const SearchViewWrapper = ({ navigation }) => (
   <AppContext.Consumer>
     {() => <SearchView navigation={navigation} />}
   </AppContext.Consumer>
 );
 
-const SettingsViewWrapper = ({navigation}) => (
+const SettingsViewWrapper = ({ navigation }) => (
   <AppContext.Consumer>
     {() => <SettingsView navigation={navigation} />}
   </AppContext.Consumer>

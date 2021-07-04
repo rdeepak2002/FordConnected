@@ -11,6 +11,7 @@ const getStyles = (colors: any) => {
       backgroundColor: colors.background,
     },
     input: {
+      color: colors.text,
       height: 40,
       margin: 12,
       borderWidth: 1,

@@ -106,7 +106,7 @@ const LoginView = () => {
 
       {refreshToken && username && (
         <View>
-          <Text>Other Information</Text>
+          <Text style={styles.text}>Other Information</Text>
           <TextInput
             placeholder={'username'}
             value={username}

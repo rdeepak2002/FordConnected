@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Button, Text, StyleSheet, SafeAreaView, View, Switch } from 'react-native';
+import { Button, Text, SafeAreaView, View } from 'react-native';
 import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
 
-const SettingsView = (props: { navigation: any }) => {
+const SettingsView = () => {
   const { styles } = useTheme();
   const { signOut } = React.useContext(AuthContext);
 

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import {Text, StyleSheet, SafeAreaView, View} from 'react-native';
-import {useTheme} from '../../styles/ThemeContext';
+import { Text, StyleSheet, SafeAreaView, View } from 'react-native';
+import { useTheme } from '../../styles/ThemeContext';
 
-const FeedView = (props: { navigation: any }) => {
-  const {colors} = useTheme();
+const FeedView = () => {
+  const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     container: {

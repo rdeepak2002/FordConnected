@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { Text, StyleSheet, SafeAreaView, View } from 'react-native';
+import { Text, SafeAreaView, View } from 'react-native';
 
 import { useTheme } from '../../styles/ThemeContext';
 
-const SearchView = (props: { navigation: any }) => {
+const SearchView = () => {
   const { styles } = useTheme()
 
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <Text>Search</Text>
+        <Text style={styles.text}>Search</Text>
       </View>
     </SafeAreaView>
   );

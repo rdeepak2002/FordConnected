@@ -17,9 +17,9 @@ const GetStartedViewWrapper = ({ navigation }) => (
   </AppContext.Consumer>
 );
 
-const LoginViewWrapper = ({ navigation }) => (
+const LoginViewWrapper = ({ }) => (
   <AppContext.Consumer>
-    {() => <LoginView navigation={navigation} />}
+    {() => <LoginView />}
   </AppContext.Consumer>
 );
 
@@ -27,27 +27,27 @@ const HomeViewWrapper = ({ }) => (
   <AppContext.Consumer>{() => <HomeView />}</AppContext.Consumer>
 );
 
-const FeedViewWrapper = ({ navigation }) => (
+const FeedViewWrapper = ({ }) => (
   <AppContext.Consumer>
-    {() => <FeedView navigation={navigation} />}
+    {() => <FeedView />}
   </AppContext.Consumer>
 );
 
-const MapViewWrapper = ({ navigation }) => (
+const MapViewWrapper = ({ }) => (
   <AppContext.Consumer>
-    {() => <MapView navigation={navigation} />}
+    {() => <MapView />}
   </AppContext.Consumer>
 );
 
-const SearchViewWrapper = ({ navigation }) => (
+const SearchViewWrapper = ({ }) => (
   <AppContext.Consumer>
-    {() => <SearchView navigation={navigation} />}
+    {() => <SearchView />}
   </AppContext.Consumer>
 );
 
-const SettingsViewWrapper = ({ navigation }) => (
+const SettingsViewWrapper = ({ }) => (
   <AppContext.Consumer>
-    {() => <SettingsView navigation={navigation} />}
+    {() => <SettingsView />}
   </AppContext.Consumer>
 );
 

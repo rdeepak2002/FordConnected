@@ -12,6 +12,8 @@ target 'FordConnected' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-appearance', :path => '../node_modules/react-native-appearance'
+
   target 'FordConnectedTests' do
     inherit! :complete
     # Pods for testing

@@ -5,26 +5,13 @@ import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
 
 const SettingsView = () => {
-  const { colors } = useTheme();
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    input: {
-      height: 40,
-      margin: 12,
-      borderWidth: 1,
-    },
-  });
-
+  const { styles } = useTheme();
   const { signOut } = React.useContext(AuthContext);
 
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <Text>Settings</Text>
+        <Text style={styles.text}>Settings</Text>
         <Button
           title="Log Out"
           onPress={() => {

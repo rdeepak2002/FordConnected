@@ -12,16 +12,20 @@ const FeedView = () => {
       backgroundColor: colors.background,
     },
     input: {
+      color: colors.text,
       height: 40,
       margin: 12,
       borderWidth: 1,
     },
+    text: {
+      color: colors.text,
+    }
   });
 
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <Text>Feed</Text>
+        <Text style={styles.text}>Feed</Text>
       </View>
     </SafeAreaView>
   );

@@ -1,21 +1,9 @@
-import {Button, StyleSheet, SafeAreaView, View} from 'react-native';
+import { Button, StyleSheet, SafeAreaView, View } from 'react-native';
 import React from 'react';
-import {useTheme} from '../../styles/ThemeContext';
+import { useTheme } from '../../styles/ThemeContext';
 
-const GetStartedView = (props: {navigation: any}) => {
-  const {colors} = useTheme();
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    input: {
-      height: 40,
-      margin: 12,
-      borderWidth: 1,
-    },
-  });
+const GetStartedView = (props: { navigation: any }) => {
+  const { styles } = useTheme();
 
   return (
     <SafeAreaView style={styles.container}>

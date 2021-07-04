@@ -1,34 +1,50 @@
 
 import * as React from 'react';
+import { StyleSheet } from 'react-native';
 import { useColorScheme } from 'react-native-appearance';
 import { lightColors, darkColors } from './colorThemes';
+
+const getStyles = (colors: any) => {
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+    },
+    text: {
+      color: colors.text,
+    },
+    webView: {
+      flex: 1,
+      marginTop: 20,
+    }
+  });
+  return styles;
+}
 
 export const ThemeContext = React.createContext({
   isDark: false,
   colors: lightColors,
+  styles: getStyles(lightColors),
   setScheme: (scheme) => { },
 });
 
 export const ThemeProvider = (props) => {
-  // Getting the device color theme, this will also work with react-native-web
-  const colorScheme = useColorScheme(); // Can be dark | light | no-preference
-
-  /*
-  * To enable changing the app theme dynamicly in the app (run-time)
-  * we're gonna use useState so we can override the default device theme
-  */
+  const colorScheme = useColorScheme();
   const [isDark, setIsDark] = React.useState(colorScheme === "dark");
 
-  // Listening to changes of device appearance while in run-time
   React.useEffect(() => {
     setIsDark(colorScheme === "dark");
   }, [colorScheme]);
 
   const defaultTheme = {
     isDark,
-    // Chaning color schemes according to theme
     colors: isDark ? darkColors : lightColors,
-    // Overrides the isDark value will cause re-render inside the context.  
+    styles: getStyles(isDark ? darkColors : lightColors),
     setScheme: (scheme) => setIsDark(scheme === "dark"),
   };
 

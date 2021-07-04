@@ -52,10 +52,6 @@ const App = () => {
   const { isDark, setScheme } = useTheme();
 
   React.useEffect(() => {
-    Appearance.addChangeListener(({ colorScheme }) => {
-      setScheme('dark');
-    });
-
     // Fetch the token from storage then navigate to our appropriate place
     const tokenRetrieve = async () => {
       let userSession;

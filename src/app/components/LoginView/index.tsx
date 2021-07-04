@@ -1,12 +1,12 @@
-import {Button, StyleSheet, SafeAreaView, Text, View} from 'react-native';
-import {useState, useEffect} from 'react';
+import { Button, StyleSheet, SafeAreaView, Text, View } from 'react-native';
+import { useState, useEffect } from 'react';
 
 import React from 'react';
 import queryString from 'query-string';
 import WebView from 'react-native-webview';
-import {TextInput} from 'react-native-gesture-handler';
-import {AuthContext} from '../../../App';
-import {useTheme} from '../../styles/ThemeContext';
+import { TextInput } from 'react-native-gesture-handler';
+import { AuthContext } from '../../../App';
+import { useTheme } from '../../styles/ThemeContext';
 
 const LoginView = () => {
   const authState = '27252';
@@ -18,27 +18,11 @@ const LoginView = () => {
   const [firstName, setFirstname] = useState<string>('');
   const [lastName, setLastname] = useState<string>('');
 
-  const {signIn} = React.useContext(AuthContext);
+  const { signIn } = React.useContext(AuthContext);
+  const { styles } = useTheme();
 
   let webView;
 
-  const {colors} = useTheme();
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    input: {
-      height: 40,
-      margin: 12,
-      borderWidth: 1,
-    },
-    webView: {
-      flex: 1,
-      marginTop: 20,
-    },
-  });
 
   const onNavigationStateChange = (webViewState: any) => {
     const parsedUrl = queryString.parse(webViewState.url);
@@ -111,7 +95,7 @@ const LoginView = () => {
         <WebView
           onMessage={handleSubmitBtn}
           ref={ref => (webView = ref)}
-          source={{uri: uri}}
+          source={{ uri: uri }}
           onNavigationStateChange={onNavigationStateChange}
           javaScriptEnabled={true}
           domStorageEnabled={true}

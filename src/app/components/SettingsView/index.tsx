@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Button, Text, SafeAreaView, View } from 'react-native';
 import { AuthContext } from '../../../App';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const SettingsView = (props: { styles: any, navigation: any }) => {
     const { signOut } = React.useContext(AuthContext);

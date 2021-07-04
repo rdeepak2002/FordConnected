@@ -8,6 +8,9 @@ import SettingsView from './SettingsView';
 import LoginView from './LoginView';
 
 import styles from "../styles/styles";
+import FeedView from './FeedView';
+import MapView from './MapView';
+import SearchView from './SearchView';
 
 const GetStartedViewWrapper = ({ navigation, route }) => (
     <AppContext.Consumer>
@@ -36,7 +39,7 @@ const HomeViewWrapper = ({ navigation, route }) => (
 const FeedViewWrapper = ({ navigation, route }) => (
     <AppContext.Consumer>
         {() => (
-            <SettingsView styles={styles} navigation={navigation} />
+            <FeedView styles={styles} navigation={navigation} />
         )}
     </AppContext.Consumer>
 );
@@ -44,7 +47,7 @@ const FeedViewWrapper = ({ navigation, route }) => (
 const MapViewWrapper = ({ navigation, route }) => (
     <AppContext.Consumer>
         {() => (
-            <SettingsView styles={styles} navigation={navigation} />
+            <MapView styles={styles} navigation={navigation} />
         )}
     </AppContext.Consumer>
 );
@@ -52,7 +55,7 @@ const MapViewWrapper = ({ navigation, route }) => (
 const SearchViewWrapper = ({ navigation, route }) => (
     <AppContext.Consumer>
         {() => (
-            <SettingsView styles={styles} navigation={navigation} />
+            <SearchView styles={styles} navigation={navigation} />
         )}
     </AppContext.Consumer>
 );

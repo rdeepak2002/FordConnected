@@ -104,11 +104,11 @@ const App: () => Node = () => {
                                 <>
                                     <Stack.Screen name={'get_started'} component={GetStartedViewWrapper} />
                                     <Stack.Screen name={'login'} component={LoginViewWrapper} />
-                                    <Stack.Screen name={'home'} component={HomeView} />
+                                    <Stack.Screen name={'home'} component={HomeViewWrapper} />
                                 </>
                                 :
                                 <>
-                                    <Stack.Screen name={'home'} component={HomeView} />
+                                    <Stack.Screen name={'home'} component={HomeViewWrapper} />
                                     <Stack.Screen name={'get_started'} component={GetStartedViewWrapper} />
                                     <Stack.Screen name={'login'} component={LoginViewWrapper} />
                                 </>

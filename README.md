@@ -39,7 +39,7 @@ cd ..
 Start the iOS app:
 
 ```
-react-native start ios
+yarn run ios
 ```
 
 ## Troubleshooting (iOS)

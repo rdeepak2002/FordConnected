@@ -13,7 +13,7 @@ import {
   LoginViewWrapper,
 } from './app/components/ViewWrappers';
 import { navigateRoot, navigationRef } from './app/components/RootNavigation';
-import { Appearance, AppearanceProvider } from 'react-native-appearance';
+import { AppearanceProvider } from 'react-native-appearance';
 import { useTheme } from './app/styles/ThemeContext';
 import { ThemeProvider } from './app/styles/ThemeContext';
 
@@ -49,7 +49,7 @@ const App = () => {
     },
   );
 
-  const { isDark, setScheme } = useTheme();
+  const { isDark } = useTheme();
 
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place

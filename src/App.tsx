@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import {
   removeUserSession,
   retrieveUserSession,
@@ -49,7 +49,7 @@ const App = () => {
     },
   );
 
-  const { setScheme } = useTheme();
+  const { isDark, setScheme } = useTheme();
 
   React.useEffect(() => {
     Appearance.addChangeListener(({ colorScheme }) => {
@@ -124,7 +124,7 @@ const App = () => {
     <AppearanceProvider>
       <ThemeProvider>
         <AuthContext.Provider value={authContext as any}>
-          <NavigationContainer ref={navigationRef}>
+          <NavigationContainer ref={navigationRef} theme={isDark ? DarkTheme : DefaultTheme}>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               {state.userSession == null ? (
                 <>

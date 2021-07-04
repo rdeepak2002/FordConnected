@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {NavigationContainer} from '@react-navigation/native';
+import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   FeedViewWrapper,
@@ -8,13 +8,16 @@ import {
   SearchViewWrapper,
   SettingsViewWrapper,
 } from '../ViewWrappers';
+import { useTheme } from '../../styles/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
 const HomeView = () => {
   const navProps = {independent: true, initialRouteName: 'feed'};
+  const { isDark, setScheme } = useTheme();
+
   return (
-    <NavigationContainer {...navProps}>
+    <NavigationContainer {...navProps} theme={isDark ? DarkTheme : DefaultTheme}>
       <Tab.Navigator>
         <Tab.Screen name="feed" component={FeedViewWrapper} />
         <Tab.Screen name="map" component={MapViewWrapper} />

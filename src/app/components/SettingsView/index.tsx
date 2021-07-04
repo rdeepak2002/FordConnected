@@ -1,22 +1,24 @@
 import React from 'react';
 
 import { Button, Text, SafeAreaView, View } from 'react-native';
-import { removeUserSession } from '../../utilities/userSession';
 import { AuthContext } from '../../../App';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const FeedView = (props: { styles: any, navigation: any }) => {
+const Tab = createBottomTabNavigator();
+
+const SettingsView = (props: { styles: any, navigation: any }) => {
     const { signOut } = React.useContext(AuthContext);
 
     return (
         <SafeAreaView style={props.styles.container}>
             <View>
-                <Text>Welcome!</Text>
+                <Text>Settings</Text>
                 <Button title='Log Out' onPress={() => {
-                    signOut(props.navigation);
+                    signOut();
                 }} />
             </View>
         </SafeAreaView>
     );
 }
 
-export default FeedView;
+export default SettingsView;

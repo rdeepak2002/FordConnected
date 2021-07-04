@@ -1,18 +1,16 @@
+import React from 'react';
+
 import type { Node } from 'react';
 
-import { useState, useEffect } from 'react';
+import { BackHandler, useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { removeUserSession, retrieveUserSession, storeUserSession } from './app/utilities/userSession';
 import { Text } from 'react-native';
-
-import React from 'react';
-import LoginView from './app/components/LoginView';
-
-import styles from './app/styles/styles';
-import GetStartedView from './app/components/GetStartedView';
-import FeedView from './app/components/FeedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { GetStartedViewWrapper, HomeViewWrapper, LoginViewWrapper } from './app/components/ViewWrappers';
+import HomeView from './app/components/HomeView';
+import { navigateRoot, navigationRef } from './app/components/RootNavigation';
 
 const Stack = createStackNavigator();
 const AppContext = React.createContext();
@@ -45,8 +43,7 @@ const App: () => Node = () => {
             userSession: null,
         }
     );
-
-
+    
     React.useEffect(() => {
         // Fetch the token from storage then navigate to our appropriate place
         const tokenRetrieve = async () => {
@@ -66,7 +63,7 @@ const App: () => Node = () => {
 
     const authContext = React.useMemo(
         () => ({
-            signIn: async (id: string, username: string, firstName: string, lastName: string, refreshToken: string, accessToken: string, navigation?: any) => {
+            signIn: async (id: string, username: string, firstName: string, lastName: string, refreshToken: string, accessToken: string) => {
                 await storeUserSession(id, username, firstName, lastName, refreshToken, accessToken).then(() => {
                     let userSession;
 
@@ -75,25 +72,16 @@ const App: () => Node = () => {
                     } catch (e) {
                         console.error(e);
                     }
-
-                    if (navigation) {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'feed' }],
-                        });
-                    }
-
+                    
+                    navigateRoot('home');
                     dispatch({ type: 'SIGN_IN', userSession: userSession });
                 }).catch((error) => {
                     console.error(error);
                 });
             },
-            signOut: async (navigation: any) => {
+            signOut: async () => {
                 await removeUserSession();
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'get_started' }],
-                });
+                navigateRoot('get_started');
                 dispatch({ type: 'SIGN_OUT' });
             }
         }),
@@ -108,7 +96,7 @@ const App: () => Node = () => {
     return (
         <>
             <AuthContext.Provider value={authContext}>
-                <NavigationContainer>
+                <NavigationContainer ref={navigationRef}>
                     <Stack.Navigator screenOptions={{ headerShown: false }} >
                         {
                             state.userSession == null
@@ -116,11 +104,11 @@ const App: () => Node = () => {
                                 <>
                                     <Stack.Screen name={'get_started'} component={GetStartedViewWrapper} />
                                     <Stack.Screen name={'login'} component={LoginViewWrapper} />
-                                    <Stack.Screen name={'feed'} component={FeedViewWrapper} />
+                                    <Stack.Screen name={'home'} component={HomeView} />
                                 </>
                                 :
                                 <>
-                                    <Stack.Screen name={'feed'} component={FeedViewWrapper} />
+                                    <Stack.Screen name={'home'} component={HomeView} />
                                     <Stack.Screen name={'get_started'} component={GetStartedViewWrapper} />
                                     <Stack.Screen name={'login'} component={LoginViewWrapper} />
                                 </>
@@ -133,29 +121,5 @@ const App: () => Node = () => {
     );
 };
 
-const GetStartedViewWrapper = ({ navigation, route }) => (
-    <AppContext.Consumer>
-        {() => (
-            <GetStartedView styles={styles} navigation={navigation} />
-        )}
-    </AppContext.Consumer>
-);
-
-const LoginViewWrapper = ({ navigation, route }) => (
-    <AppContext.Consumer>
-        {() => (
-            <LoginView styles={styles} navigation={navigation} />
-        )}
-    </AppContext.Consumer>
-);
-
-const FeedViewWrapper = ({ navigation, route }) => (
-    <AppContext.Consumer>
-        {() => (
-            <FeedView styles={styles} navigation={navigation} />
-        )}
-    </AppContext.Consumer>
-);
-
-export { AuthContext };
+export { AppContext, AuthContext };
 export default App;

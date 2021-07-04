@@ -68,7 +68,7 @@ const LoginView = (props: { styles: any, navigation: any }) => {
             const id = 'someId';
             const accessToken = 'someAccessToken';
 
-            signIn(id, username, firstName, lastName, refreshToken, accessToken, props.navigation);
+            signIn(id, username, firstName, lastName, refreshToken, accessToken);
         }
     }
 

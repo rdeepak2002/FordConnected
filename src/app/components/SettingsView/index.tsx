@@ -1,23 +1,28 @@
 import React from 'react';
 
-import { Button, Text, SafeAreaView, View } from 'react-native';
+import { Button, Text, SafeAreaView, View, ScrollView } from 'react-native';
 import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
 import { connect } from 'react-redux';
-import { setUserSession } from '../../redux/actions/UserSessionActions';
-import { bindActionCreators } from 'redux';
 
 const SettingsView = (props: any) => {
   const { styles } = useTheme();
   const { signOut } = React.useContext(AuthContext);
+  const userSession = props.userSession.current ? JSON.parse(props.userSession.current) : undefined;
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <ScrollView>
         <Text style={styles.text}>Settings</Text>
 
-        <Text style={styles.text}>{JSON.stringify(props.userSession)}</Text>
+        {
+          userSession &&
+          <>
+            <Text style={styles.text}>Username: {userSession.username}</Text>
+            <Text style={styles.text}>Name: {userSession.firstName} {userSession.lastName}</Text>
+          </>
+        }
 
         <ThemeToggle />
 
@@ -27,7 +32,7 @@ const SettingsView = (props: any) => {
             signOut();
           }}
         />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

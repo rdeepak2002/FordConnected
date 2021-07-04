@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 import {
   removeUserSession,
   retrieveUserSession,
@@ -12,12 +12,14 @@ import {
   HomeViewWrapper,
   LoginViewWrapper,
 } from './app/components/ViewWrappers';
-import {navigateRoot, navigationRef} from './app/components/RootNavigation';
-import {AppearanceProvider} from 'react-native-appearance';
+import { navigateRoot, navigationRef } from './app/components/RootNavigation';
+import { Appearance, AppearanceProvider } from 'react-native-appearance';
+import { useTheme } from './app/styles/ThemeContext';
+import { ThemeProvider } from './app/styles/ThemeContext';
 
 const Stack = createStackNavigator();
-const AppContext = React.createContext('');
-const AuthContext = React.createContext('');
+const AppContext = React.createContext(undefined);
+const AuthContext = React.createContext(undefined);
 
 const App = () => {
   const [state, dispatch] = React.useReducer(
@@ -47,7 +49,13 @@ const App = () => {
     },
   );
 
+  const { setScheme } = useTheme();
+
   React.useEffect(() => {
+    Appearance.addChangeListener(({ colorScheme }) => {
+      setScheme('dark');
+    });
+
     // Fetch the token from storage then navigate to our appropriate place
     const tokenRetrieve = async () => {
       let userSession;
@@ -58,7 +66,7 @@ const App = () => {
         console.error(e);
       }
 
-      dispatch({type: 'RESTORE_TOKEN', userSession: userSession});
+      dispatch({ type: 'RESTORE_TOKEN', userSession: userSession });
     };
 
     tokenRetrieve();
@@ -92,7 +100,7 @@ const App = () => {
             }
 
             navigateRoot('home');
-            dispatch({type: 'SIGN_IN', userSession: userSession});
+            dispatch({ type: 'SIGN_IN', userSession: userSession });
           })
           .catch(error => {
             console.error(error);
@@ -101,7 +109,7 @@ const App = () => {
       signOut: async () => {
         await removeUserSession();
         navigateRoot('get_started');
-        dispatch({type: 'SIGN_OUT'});
+        dispatch({ type: 'SIGN_OUT' });
       },
     }),
     [],
@@ -114,34 +122,36 @@ const App = () => {
 
   return (
     <AppearanceProvider>
-      <AuthContext.Provider value={authContext as any}>
-        <NavigationContainer ref={navigationRef}>
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-            {state.userSession == null ? (
-              <>
-                <Stack.Screen
-                  name={'get_started'}
-                  component={GetStartedViewWrapper}
-                />
-                <Stack.Screen name={'login'} component={LoginViewWrapper} />
-                <Stack.Screen name={'home'} component={HomeViewWrapper} />
-              </>
-            ) : (
-              <>
-                <Stack.Screen name={'home'} component={HomeViewWrapper} />
-                <Stack.Screen
-                  name={'get_started'}
-                  component={GetStartedViewWrapper}
-                />
-                <Stack.Screen name={'login'} component={LoginViewWrapper} />
-              </>
-            )}
-          </Stack.Navigator>
-        </NavigationContainer>
-      </AuthContext.Provider>
+      <ThemeProvider>
+        <AuthContext.Provider value={authContext as any}>
+          <NavigationContainer ref={navigationRef}>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              {state.userSession == null ? (
+                <>
+                  <Stack.Screen
+                    name={'get_started'}
+                    component={GetStartedViewWrapper}
+                  />
+                  <Stack.Screen name={'login'} component={LoginViewWrapper} />
+                  <Stack.Screen name={'home'} component={HomeViewWrapper} />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen name={'home'} component={HomeViewWrapper} />
+                  <Stack.Screen
+                    name={'get_started'}
+                    component={GetStartedViewWrapper}
+                  />
+                  <Stack.Screen name={'login'} component={LoginViewWrapper} />
+                </>
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </AuthContext.Provider>
+      </ThemeProvider>
     </AppearanceProvider>
   );
 };
 
-export {AppContext, AuthContext};
+export { AppContext, AuthContext };
 export default App;

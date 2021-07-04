@@ -1,4 +1,4 @@
-import {Button, SafeAreaView, Text, View} from 'react-native';
+import {Button, StyleSheet, SafeAreaView, Text, View} from 'react-native';
 import {useState, useEffect} from 'react';
 
 import React from 'react';
@@ -6,8 +6,9 @@ import queryString from 'query-string';
 import WebView from 'react-native-webview';
 import {TextInput} from 'react-native-gesture-handler';
 import {AuthContext} from '../../../App';
+import {useTheme} from '../../styles/ThemeContext';
 
-const LoginView = (props: {styles: any; navigation: any}) => {
+const LoginView = () => {
   const authState = '27252';
   const fordAuthUri = `https://fordconnect.cv.ford.com/common/login/?make=F&application_id=afdc085b-377a-4351-b23e-5e1d35fb3700&client_id=30990062-9618-40e1-a27b-7c6bcb23658a&response_type=code&state=${authState}&redirect_uri=https%3A%2F%2Flocalhost%3A3000&scope=access`;
 
@@ -19,7 +20,25 @@ const LoginView = (props: {styles: any; navigation: any}) => {
 
   const {signIn} = React.useContext(AuthContext);
 
-  let webView = undefined;
+  let webView;
+
+  const {colors} = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+    },
+    webView: {
+      flex: 1,
+      marginTop: 20,
+    },
+  });
 
   const onNavigationStateChange = (webViewState: any) => {
     const parsedUrl = queryString.parse(webViewState.url);
@@ -28,7 +47,7 @@ const LoginView = (props: {styles: any; navigation: any}) => {
     const state = parsedUrl['https://localhost:3000/?state'];
 
     if (code && state && code.length > 0 && state === authState) {
-      setRefreshToken(code);
+      setRefreshToken(code as string);
     }
   };
 
@@ -52,7 +71,9 @@ const LoginView = (props: {styles: any; navigation: any}) => {
             true;
         `;
 
-    if (webView) webView.injectJavaScript(injectedJavaScript);
+    if (webView) {
+      webView.injectJavaScript(injectedJavaScript);
+    }
   }, 3000);
 
   const handleSubmitBtn = (event: any) => {
@@ -82,10 +103,10 @@ const LoginView = (props: {styles: any; navigation: any}) => {
     return () => {
       clearTimeout(injectScriptTimer);
     };
-  }, []);
+  }, [injectScriptTimer]);
 
   return (
-    <SafeAreaView style={props.styles.container}>
+    <SafeAreaView style={styles.container}>
       {!refreshToken && (
         <WebView
           onMessage={handleSubmitBtn}
@@ -95,7 +116,7 @@ const LoginView = (props: {styles: any; navigation: any}) => {
           javaScriptEnabled={true}
           domStorageEnabled={true}
           startInLoadingState={false}
-          style={{flex: 1, marginTop: 20}}
+          style={styles.webView}
         />
       )}
 
@@ -105,20 +126,20 @@ const LoginView = (props: {styles: any; navigation: any}) => {
           <TextInput
             placeholder={'username'}
             value={username}
-            style={props.styles.input}
+            style={styles.input}
             editable={false}
           />
           <TextInput
             placeholder={'first name'}
             value={firstName}
             onChange={event => setFirstname(event.nativeEvent.text)}
-            style={props.styles.input}
+            style={styles.input}
           />
           <TextInput
             placeholder={'last name'}
             value={lastName}
             onChange={event => setLastname(event.nativeEvent.text)}
-            style={props.styles.input}
+            style={styles.input}
           />
           <Button title="Register" onPress={register} />
         </View>

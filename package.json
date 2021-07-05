@@ -5,6 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "deepak_phone": "yarn run ios --device \"Deepak’s iPhone\"",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."

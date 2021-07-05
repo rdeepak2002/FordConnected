@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 const SettingsView = (props: any) => {
   const { styles } = useTheme();
   const { signOut } = React.useContext(AuthContext);
-  const userSession = props.userSession.current ? JSON.parse(props.userSession.current) : undefined;
+  const userSession = props.userSession.current;
 
   return (
     <SafeAreaView style={styles.container}>

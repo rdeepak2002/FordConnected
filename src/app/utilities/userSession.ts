@@ -28,7 +28,12 @@ async function retrieveUserSession() {
   try {
     const session: any = await EncryptedStorage.getItem('user_session');
 
-    return session;
+    if(session) {
+      return JSON.parse(session);
+    }
+    else {
+      return undefined;
+    }
   } catch (error) {
     console.error(error);
     return null;

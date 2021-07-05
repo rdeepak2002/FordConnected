@@ -7,6 +7,8 @@ async function storeUserSession(
   lastName: string,
   refreshToken: string,
   accessToken: string,
+  fordProfileId: string,
+  expiresAtSeconds: number
 ) {
   try {
     const userData = {

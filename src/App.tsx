@@ -79,6 +79,8 @@ const App = () => {
         lastName: string,
         refreshToken: string,
         accessToken: string,
+        fordProfileId: string,
+        expiresAtSeconds: number
       ) => {
         await storeUserSession(
           id,
@@ -87,6 +89,8 @@ const App = () => {
           lastName,
           refreshToken,
           accessToken,
+          fordProfileId,
+          expiresAtSeconds
         )
           .then(() => {
             let userSession;

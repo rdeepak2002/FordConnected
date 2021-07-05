@@ -81,10 +81,12 @@ const LoginView = (props: any) => {
       // todo make register post here then save to storage after we know id of user in database -> also make request to get access token in server to allow server to know rergister request is real
       const id = 'someId';
       const accessToken = 'someAccessToken';
+      const fordProfileId = 'fordProfileId';
+      const expiresAtSeconds = 0;
 
-      props.setUserSession({ id: id, username: username, firstName: firstName, lastName: lastName, refreshToken: refreshToken, accessToken: accessToken });
+      props.setUserSession({ id: id, username: username, firstName: firstName, lastName: lastName, refreshToken: refreshToken, accessToken: accessToken, fordProfileId: fordProfileId, expiresAtSeconds: expiresAtSeconds });
 
-      signIn(id, username, firstName, lastName, refreshToken, accessToken);
+      signIn(id, username, firstName, lastName, refreshToken, accessToken, fordProfileId, expiresAtSeconds);
     }
   };
 

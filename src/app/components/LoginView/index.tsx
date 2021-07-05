@@ -10,13 +10,14 @@ import { useTheme } from '../../styles/ThemeContext';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setUserSession } from '../../redux/actions/UserSessionActions';
+import { loginUser } from '../../api/api';
 
 const LoginView = (props: any) => {
   const authState = '27252';
   const fordAuthUri = `https://fordconnect.cv.ford.com/common/login/?make=F&application_id=afdc085b-377a-4351-b23e-5e1d35fb3700&client_id=30990062-9618-40e1-a27b-7c6bcb23658a&response_type=code&state=${authState}&redirect_uri=https%3A%2F%2Flocalhost%3A3000&scope=access`;
 
   const [uri] = useState<string>(fordAuthUri);
-  const [refreshToken, setRefreshToken] = useState<string>(undefined);
+  const [code, setCode] = useState<string>(undefined);
   const [username, setUsername] = useState<string>(undefined);
   const [firstName, setFirstname] = useState<string>('');
   const [lastName, setLastname] = useState<string>('');
@@ -34,7 +35,7 @@ const LoginView = (props: any) => {
     const state = parsedUrl['https://localhost:3000/?state'];
 
     if (code && state && code.length > 0 && state === authState) {
-      setRefreshToken(code as string);
+      setCode(code as string);
     }
   };
 
@@ -71,22 +72,35 @@ const LoginView = (props: any) => {
 
   const register = () => {
     if (
-      refreshToken &&
+      code &&
       username &&
       firstName &&
       lastName &&
       firstName.length > 0 &&
       lastName.length > 0
     ) {
-      // todo make register post here then save to storage after we know id of user in database -> also make request to get access token in server to allow server to know rergister request is real
-      const id = 'someId';
-      const accessToken = 'someAccessToken';
-      const fordProfileId = 'fordProfileId';
-      const expiresAtSeconds = 0;
-
-      props.setUserSession({ id: id, username: username, firstName: firstName, lastName: lastName, refreshToken: refreshToken, accessToken: accessToken, fordProfileId: fordProfileId, expiresAtSeconds: expiresAtSeconds });
-
-      signIn(id, username, firstName, lastName, refreshToken, accessToken, fordProfileId, expiresAtSeconds);
+      // call server to login or register the user
+      loginUser(username, firstName, lastName, code).then(([data, error]) => {
+        if (error) {
+          console.error('LOGIN ERROR', 'SERVER ERROR');
+          console.error(error);
+        }
+        else if (data) {
+          const id = data.userId;
+          const fordProfileId = data.fordProfileId;
+          const accessToken = data.accessToken;
+          const accessExpiresAtSeconds = parseInt(data.accessExpiresAtSeconds);
+          const refreshToken = data.refreshToken;
+          const refreshExpiresAtSeconds = parseInt(data.refreshExpiresAtSeconds);
+    
+          props.setUserSession({ id: id, username: username, firstName: firstName, lastName: lastName, refreshToken: refreshToken, accessToken: accessToken, fordProfileId: fordProfileId, accessExpiresAtSeconds: accessExpiresAtSeconds, refreshExpiresAtSeconds: refreshExpiresAtSeconds });
+    
+          signIn(id, username, firstName, lastName, refreshToken, accessToken, fordProfileId, accessExpiresAtSeconds, refreshExpiresAtSeconds);
+        }
+        else {
+          console.error('LOGIN ERROR', 'APP ERROR');
+        }
+      });
     }
   };
 
@@ -98,7 +112,7 @@ const LoginView = (props: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!refreshToken && (
+      {!code && (
         <WebView
           onMessage={handleSubmitBtn}
           ref={ref => (webView = ref)}
@@ -111,7 +125,7 @@ const LoginView = (props: any) => {
         />
       )}
 
-      {refreshToken && username && (
+      {code && username && (
         <View>
           <Text style={styles.text}>Other Information</Text>
           <TextInput

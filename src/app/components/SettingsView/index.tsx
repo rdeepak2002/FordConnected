@@ -5,6 +5,7 @@ import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
 import { connect } from 'react-redux';
+import { DEBUG_MODE } from '../../../Constants';
 
 const SettingsView = (props: any) => {
   const { styles } = useTheme();
@@ -21,6 +22,15 @@ const SettingsView = (props: any) => {
           <>
             <Text style={styles.text}>Username: {userSession.username}</Text>
             <Text style={styles.text}>Name: {userSession.firstName} {userSession.lastName}</Text>
+            {
+              DEBUG_MODE &&
+              <>
+                <Text style={styles.text}>User ID: {userSession.id}</Text>
+                <Text style={styles.text}>Ford Profile ID: {userSession.fordProfileId}</Text>
+                <Text style={styles.text}>Access Token Expiry: {new Date(userSession.accessExpiresAtSeconds * 1000).toString()}</Text>
+                <Text style={styles.text}>Refresh Token Expiry: {new Date(userSession.refreshExpiresAtSeconds * 1000).toString()}</Text>
+              </>
+            }
           </>
         }
 

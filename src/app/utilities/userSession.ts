@@ -8,7 +8,8 @@ async function storeUserSession(
   refreshToken: string,
   accessToken: string,
   fordProfileId: string,
-  expiresAtSeconds: number
+  accessExpiresAtSeconds: number,
+  refreshExpiresAtSeconds: number
 ) {
   try {
     const userData = {
@@ -18,6 +19,9 @@ async function storeUserSession(
       lastName: lastName,
       refreshToken: refreshToken,
       accessToken: accessToken,
+      fordProfileId: fordProfileId,
+      accessExpiresAtSeconds: accessExpiresAtSeconds,
+      refreshExpiresAtSeconds: refreshExpiresAtSeconds
     };
 
     await EncryptedStorage.setItem('user_session', JSON.stringify(userData));

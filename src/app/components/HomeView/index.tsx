@@ -31,6 +31,8 @@ const HomeView = (props: any) => {
         userSession = await retrieveUserSession();
         if (!userSession) signOut();
         if(!props.userSession.current) {
+          // console.log(userSession.refreshToken);
+          // console.log(userSession.accessToken);
           props.setUserSession(userSession);
         }
       } catch (e) {

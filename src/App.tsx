@@ -80,7 +80,8 @@ const App = () => {
         refreshToken: string,
         accessToken: string,
         fordProfileId: string,
-        expiresAtSeconds: number
+        accessExpiresAtSeconds: number,
+        refreshExpiresAtSeconds: number
       ) => {
         await storeUserSession(
           id,
@@ -90,7 +91,8 @@ const App = () => {
           refreshToken,
           accessToken,
           fordProfileId,
-          expiresAtSeconds
+          accessExpiresAtSeconds,
+          refreshExpiresAtSeconds
         )
           .then(() => {
             let userSession;

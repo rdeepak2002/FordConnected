@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { REACT_APP_API_URL } from '../../Constants';
+import { DEBUG_MODE, REACT_APP_API_URL, REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET } from '../../Constants';
 
 const loginUser = async (username: string, firstName: string, lastName: string, code: string): Promise<[response: any, error: any]> => {
   const postData: any = JSON.stringify({
@@ -21,7 +21,7 @@ const loginUser = async (username: string, firstName: string, lastName: string, 
 
   const url = `${REACT_APP_API_URL}/api/graphql`;
 
-  console.log('API CALL loginUser', url);
+  if (DEBUG_MODE) console.log('API CALL loginUser', url);
 
   try {
     const data = await axios.post(url, postData);
@@ -37,4 +37,28 @@ const loginUser = async (username: string, firstName: string, lastName: string, 
   return [response, error];
 }
 
-export { loginUser }
+const refreshTokens = async (refreshToken: string): Promise<[response: any, error: any]> => {
+  let formdata = new FormData();
+  formdata.append("grant_type", "refresh_token");
+  formdata.append("refresh_token", refreshToken);
+  formdata.append("client_id", REACT_APP_CLIENT_ID);
+  formdata.append("client_secret", REACT_APP_CLIENT_SECRET);
+
+  let requestOptions: any = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow'
+  };
+
+  let result = undefined;
+  let error = undefined;
+
+  await fetch("https://dah2vb2cprod.b2clogin.com/914d88b1-3523-4bf6-9be4-1b96b4f6f919/oauth2/v2.0/token?p=B2C_1A_signup_signin_common", requestOptions)
+    .then(responseIn => responseIn.text())
+    .then(resultIn => result = JSON.parse(resultIn))
+    .catch(errorIn => error = errorIn);
+
+  return [result, error];
+}
+
+export { loginUser, refreshTokens }

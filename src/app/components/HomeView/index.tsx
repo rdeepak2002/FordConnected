@@ -32,31 +32,26 @@ const HomeView = (props: any) => {
         userSession = await retrieveUserSession();
         if (!userSession) signOut();
         if (!props.userSession.current) {
+          // get current timestamp in seconds
           const curTimestampSeconds = Math.floor(new Date().getTime() / 1000);
 
-          refreshTokens(userSession.refreshToken).then(([data, error]) => {
-            if (error) {
-              console.error('REFRESH TOKEN ERROR', 'SERVER ERROR');
-              console.error(error);
-            }
-            else if (data) {
-              const newAccessToken = data.access_token;
-              const newRefreshToken = data.refresh_token;
-              const newAccessExpiresAtSeconds = parseInt(data.expires_on);
-              const newRefreshExpiresAtSeconds = curTimestampSeconds + parseInt(data.refresh_token_expires_in);
-
-              userSession.accessToken = newAccessToken;
-              userSession.refreshToken = newRefreshToken;
-              userSession.accessExpiresAtSeconds = newAccessExpiresAtSeconds;
-              userSession.refreshExpiresAtSeconds = newRefreshExpiresAtSeconds;
-
-              props.setUserSession(userSession);
-            }
-            else {
-              console.error('REFRESH TOKEN ERROR', 'APP ERROR');
-            }
-          });
-          props.setUserSession(userSession);
+          // logout if refresh token is expired
+          if (curTimestampSeconds >= userSession.refreshExpiresAtSeconds) {
+            signOut();
+          }
+          else {
+            // refresh the auth tokens
+            refreshTokens(userSession.refreshToken, userSession, props, curTimestampSeconds).then(([data, error]) => {
+              if (error) {
+                console.error('REFRESH TOKEN ERROR', 'SERVER ERROR');
+                console.error(error);
+              }
+              else if (!data) {
+                console.error('REFRESH TOKEN ERROR', 'APP ERROR');
+              }
+            });
+            props.setUserSession(userSession);
+          }
         }
       } catch (e) {
         console.error(e);

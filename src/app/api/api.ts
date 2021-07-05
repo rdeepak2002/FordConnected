@@ -37,7 +37,7 @@ const loginUser = async (username: string, firstName: string, lastName: string, 
   return [response, error];
 }
 
-const refreshTokens = async (refreshToken: string): Promise<[response: any, error: any]> => {
+const refreshTokens = async (refreshToken: string, userSession: any, props:any, curTimestampSeconds:number): Promise<[response: any, error: any]> => {
   let formdata = new FormData();
   formdata.append("grant_type", "refresh_token");
   formdata.append("refresh_token", refreshToken);
@@ -57,6 +57,20 @@ const refreshTokens = async (refreshToken: string): Promise<[response: any, erro
     .then(responseIn => responseIn.text())
     .then(resultIn => result = JSON.parse(resultIn))
     .catch(errorIn => error = errorIn);
+
+  if(result) {
+    const newAccessToken = result.access_token;
+    const newRefreshToken = result.refresh_token;
+    const newAccessExpiresAtSeconds = parseInt(result.expires_on);
+    const newRefreshExpiresAtSeconds = curTimestampSeconds + parseInt(result.refresh_token_expires_in);
+
+    userSession.accessToken = newAccessToken;
+    userSession.refreshToken = newRefreshToken;
+    userSession.accessExpiresAtSeconds = newAccessExpiresAtSeconds;
+    userSession.refreshExpiresAtSeconds = newRefreshExpiresAtSeconds;
+
+    props.setUserSession(userSession);
+  }
 
   return [result, error];
 }

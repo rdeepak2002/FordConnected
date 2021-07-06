@@ -5,14 +5,14 @@ const loginUser = async (username: string, firstName: string, lastName: string, 
   const postData: any = JSON.stringify({
     query: `mutation {
       loginUser(username: "${username}", firstName: "${firstName}", lastName: "${lastName}", code: "${code}"){
-          userId
-          fordProfileId
-          accessToken
-          accessExpiresAtSeconds
-          refreshToken
-          refreshExpiresAtSeconds
+        userId
+        fordProfileId
+        accessToken
+        accessExpiresAtSeconds
+        refreshToken
+        refreshExpiresAtSeconds
       }
-  }`,
+    }`,
     variables: {}
   });
 
@@ -38,41 +38,49 @@ const loginUser = async (username: string, firstName: string, lastName: string, 
 }
 
 const refreshTokens = async (refreshToken: string, userSession: any, props:any, curTimestampSeconds:number): Promise<[response: any, error: any]> => {
-  let formdata = new FormData();
-  formdata.append("grant_type", "refresh_token");
-  formdata.append("refresh_token", refreshToken);
-  formdata.append("client_id", REACT_APP_CLIENT_ID);
-  formdata.append("client_secret", REACT_APP_CLIENT_SECRET);
+  const postData: any = JSON.stringify({
+    query: `mutation {
+      refreshTokens(refreshToken: "${refreshToken}"){
+        userId
+        fordProfileId
+        accessToken
+        accessExpiresAtSeconds
+        refreshToken
+        refreshExpiresAtSeconds
+      }
+    }`,
+    variables: {}
+  });
 
-  let requestOptions: any = {
-    method: 'POST',
-    body: formdata,
-    redirect: 'follow'
-  };
-
-  let result = undefined;
+  let response = undefined;
   let error = undefined;
 
-  await fetch("https://dah2vb2cprod.b2clogin.com/914d88b1-3523-4bf6-9be4-1b96b4f6f919/oauth2/v2.0/token?p=B2C_1A_signup_signin_common", requestOptions)
-    .then(responseIn => responseIn.text())
-    .then(resultIn => result = JSON.parse(resultIn))
-    .catch(errorIn => error = errorIn);
+  const url = `${REACT_APP_API_URL}/api/graphql`;
 
-  if(result) {
-    const newAccessToken = result.access_token;
-    const newRefreshToken = result.refresh_token;
-    const newAccessExpiresAtSeconds = parseInt(result.expires_on);
-    const newRefreshExpiresAtSeconds = curTimestampSeconds + parseInt(result.refresh_token_expires_in);
+  if (DEBUG_MODE) console.log('API CALL refreshTokens', url);
 
-    userSession.accessToken = newAccessToken;
-    userSession.refreshToken = newRefreshToken;
-    userSession.accessExpiresAtSeconds = newAccessExpiresAtSeconds;
-    userSession.refreshExpiresAtSeconds = newRefreshExpiresAtSeconds;
+  try {
+    const data = await axios.post(url, postData);
+    if (data.data.data) {
+      response = data.data.data.refreshTokens;
 
-    props.setUserSession(userSession);
+      userSession.id = response.userId;
+      userSession.fordProfileId = response.fordProfileId;
+      userSession.accessToken = response.accessToken;
+      userSession.refreshToken = response.refreshToken;
+      userSession.accessExpiresAtSeconds = parseInt(response.accessExpiresAtSeconds);
+      userSession.refreshExpiresAtSeconds = parseInt(response.refreshExpiresAtSeconds);
+  
+      props.setUserSession(userSession);
+
+    }
+    error = data.data.errors;
+  }
+  catch (err) {
+    error = err;
   }
 
-  return [result, error];
+  return [response, error];
 }
 
 export { loginUser, refreshTokens }

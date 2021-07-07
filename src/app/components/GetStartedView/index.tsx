@@ -1,4 +1,4 @@
-import { Button, StyleSheet, SafeAreaView, View } from 'react-native';
+import { Button, SafeAreaView, View } from 'react-native';
 import React from 'react';
 import { useTheme } from '../../styles/ThemeContext';
 

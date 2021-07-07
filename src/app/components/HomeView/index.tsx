@@ -1,4 +1,5 @@
 import React from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/Foundation';
 
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -21,7 +22,7 @@ const Tab = createBottomTabNavigator();
 
 const HomeView = (props: any) => {
   const navProps = { independent: true, initialRouteName: 'feed' };
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   const { signOut } = React.useContext(AuthContext);
 
   useEffect(() => {
@@ -63,11 +64,55 @@ const HomeView = (props: any) => {
 
   return (
     <NavigationContainer {...navProps} theme={isDark ? DarkTheme : DefaultTheme}>
-      <Tab.Navigator>
-        <Tab.Screen name="feed" component={FeedViewWrapper} />
-        <Tab.Screen name="map" component={MapViewWrapper} />
-        <Tab.Screen name="search" component={SearchViewWrapper} />
-        <Tab.Screen name="settings" component={SettingsViewWrapper} />
+      <Tab.Navigator
+        tabBarOptions={{
+          activeTintColor: colors.navbarItemActiveTint,
+          inactiveTintColor: colors.navbarItemInactiveTint,
+          style: {
+            backgroundColor: colors.navbarBg,
+          }
+        }}
+      >
+        <Tab.Screen
+          name='feed'
+          component={FeedViewWrapper}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name='home' color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="map"
+          component={MapViewWrapper}
+          options={{
+            tabBarLabel: 'Discover',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name='magnifying-glass' color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="search"
+          component={SearchViewWrapper}
+          options={{
+            tabBarLabel: 'Friends',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name='torsos-all' color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="settings"
+          component={SettingsViewWrapper}
+          options={{
+            tabBarLabel: 'Preferences',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name='widget' color={color} size={size} />
+            ),
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

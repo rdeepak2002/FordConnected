@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Text, StyleSheet, SafeAreaView, View } from 'react-native';
+import { Text, StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
 
 const FeedView = () => {

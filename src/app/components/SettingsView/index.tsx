@@ -34,7 +34,7 @@ const SettingsView = (props: any) => {
           </>
         }
 
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
 
         <Button
           title="Log Out"

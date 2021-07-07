@@ -2,7 +2,7 @@ import React from 'react';
 import FullWidthImage from 'react-native-fullwidth-image';
 
 import { useEffect, useState } from 'react';
-import { Text, SafeAreaView, View, Image } from 'react-native';
+import { Text, SafeAreaView, View } from 'react-native';
 import { getCarImageFull } from '../../api/api';
 import { useTheme } from '../../styles/ThemeContext';
 import { retrieveUserSession } from '../../utilities/userSession';

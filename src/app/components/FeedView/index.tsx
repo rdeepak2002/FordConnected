@@ -1,30 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Text, StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
+import { Text, SafeAreaView, View, Image } from 'react-native';
+import { getCarImageFull } from '../../api/api';
 import { useTheme } from '../../styles/ThemeContext';
+import Base64 from '../../utilities/Base64';
+import { retrieveUserSession } from '../../utilities/userSession';
 
-const FeedView = () => {
-  const { colors } = useTheme();
+const FeedView = (props: any) => {
+  const { styles } = useTheme();
+  const [carImgData, setCarImgData] = useState<any>(undefined);
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    input: {
-      color: colors.text,
-      height: 40,
-      margin: 12,
-      borderWidth: 1,
-    },
-    text: {
-      color: colors.text,
+  useEffect(() => {
+    const loadCarImage = async () => {
+      const userSession = await retrieveUserSession();
+
+      if (userSession) {
+        const imageBase64 = await getCarImageFull(userSession, props);
+
+        // console.log(imageBase64);
+
+        setCarImgData(imageBase64);
+      }
+    };
+
+    if (!carImgData) {
+      loadCarImage();
     }
   });
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View style={{display: 'flex', flexDirection: 'column'}}>
+        {carImgData && <Image style={{width: '100%', height: 100}} source={{uri: carImgData}}></Image>}
         <Text style={styles.text}>Feed</Text>
       </View>
     </SafeAreaView>

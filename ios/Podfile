@@ -14,6 +14,7 @@ target 'FordConnected' do
 
   pod 'react-native-appearance', :path => '../node_modules/react-native-appearance'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
 
   target 'FordConnectedTests' do
     inherit! :complete

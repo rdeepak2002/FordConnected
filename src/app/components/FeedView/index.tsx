@@ -15,11 +15,7 @@ const FeedView = (props: any) => {
       const userSession = await retrieveUserSession();
 
       if (userSession) {
-        const imageBase64 = await getCarImageFull(userSession, props);
-
-        // console.log(imageBase64);
-
-        setCarImgData(imageBase64);
+        setCarImgData(await getCarImageFull(userSession, props));
       }
     };
 

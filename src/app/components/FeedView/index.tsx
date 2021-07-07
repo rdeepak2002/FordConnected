@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-
-import { Text, SafeAreaView, View, Image } from 'react-native';
+import React from 'react';
 import FullWidthImage from 'react-native-fullwidth-image';
+
+import { useEffect, useState } from 'react';
+import { Text, SafeAreaView, View, Image } from 'react-native';
 import { getCarImageFull } from '../../api/api';
 import { useTheme } from '../../styles/ThemeContext';
-import Base64 from '../../utilities/Base64';
 import { retrieveUserSession } from '../../utilities/userSession';
 
 const FeedView = (props: any) => {
@@ -27,10 +27,12 @@ const FeedView = (props: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ display: 'flex', flexDirection: 'column' }}>
-        {carImgData && <FullWidthImage source={{ uri: carImgData }} />}
-        <Text style={styles.text}>Feed</Text>
-      </View>
+      {carImgData &&
+        <View style={{ display: 'flex', flexDirection: 'column' }}>
+          <FullWidthImage source={{ uri: carImgData }} />
+          <Text style={styles.text}>Feed</Text>
+        </View>
+      }
     </SafeAreaView>
   );
 };

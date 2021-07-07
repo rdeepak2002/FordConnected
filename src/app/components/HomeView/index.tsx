@@ -42,7 +42,7 @@ const HomeView = (props: any) => {
           }
           else {
             // refresh the auth tokens
-            refreshTokens(userSession, props).then(([data, error]) => {
+            await refreshTokens(userSession, props).then(([data, error]) => {
               if (error) {
                 console.error('REFRESH TOKEN ERROR', 'SERVER ERROR');
                 console.error(error);

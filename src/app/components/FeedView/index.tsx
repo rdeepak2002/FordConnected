@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Text, SafeAreaView, View, Image } from 'react-native';
+import FullWidthImage from 'react-native-fullwidth-image';
 import { getCarImageFull } from '../../api/api';
 import { useTheme } from '../../styles/ThemeContext';
 import Base64 from '../../utilities/Base64';
@@ -27,7 +28,7 @@ const FeedView = (props: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{display: 'flex', flexDirection: 'column'}}>
-        {carImgData && <Image style={{width: '100%', height: 100}} source={{uri: carImgData}}></Image>}
+        {carImgData && <FullWidthImage source={{uri: carImgData}}/>}
         <Text style={styles.text}>Feed</Text>
       </View>
     </SafeAreaView>

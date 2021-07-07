@@ -95,6 +95,8 @@ const getCarImageFull = async (userSession: any, props: any) => {
     return await getCarImageFull(props.userSession.current, props);
   }
   else {
+    console.log('API CALL getCarImageFull', 'getting image');
+
     let data;
 
     await RNFetchBlob.fetch('GET', 'https://api.mps.ford.com/api/fordconnect/vehicles/v1/8a7f9fa878849d8a0179579d2f26043a/images/full?make=Ford&model=&year=2019', {

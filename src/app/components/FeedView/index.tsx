@@ -27,8 +27,8 @@ const FeedView = (props: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{display: 'flex', flexDirection: 'column'}}>
-        {carImgData && <FullWidthImage source={{uri: carImgData}}/>}
+      <View style={{ display: 'flex', flexDirection: 'column' }}>
+        {carImgData && <FullWidthImage source={{ uri: carImgData }} />}
         <Text style={styles.text}>Feed</Text>
       </View>
     </SafeAreaView>

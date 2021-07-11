@@ -1,6 +1,6 @@
-export const addVehicle = vehicle => (
+export const setVehicles = vehicles => (
   {
-    type: 'ADD_VEHICLE',
-    payload: vehicle,
+    type: 'SET_VEHICLES',
+    payload: vehicles,
   }
 );

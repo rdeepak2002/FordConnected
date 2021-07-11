@@ -90,16 +90,22 @@ const getCarImageFull = async (userSession: any, props: any) => {
   const curTimestampSeconds = Math.floor(new Date().getTime() / 1000);
 
   if (curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
-    console.log('API CALL getCarImageFull', 'refreshing tokens');
+    if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'refreshing tokens');
     await refreshTokens(userSession, props);
     return await getCarImageFull(props.userSession.current, props);
   }
   else {
-    console.log('API CALL getCarImageFull', 'getting image');
+    if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'getting image');
+
+    const vehicle = props?.vehicles.current[0];
+    const vehicleId = vehicle?.id;
+    const make = vehicle?.make;
+    const modelName = vehicle?.modelName;
+    const modelYear = vehicle?.modelYear;
 
     let data;
 
-    await RNFetchBlob.fetch('GET', 'https://api.mps.ford.com/api/fordconnect/vehicles/v1/8a7f9fa878849d8a0179579d2f26043a/images/full?make=Ford&model=&year=2019', {
+    await RNFetchBlob.fetch('GET', `https://api.mps.ford.com/api/fordconnect/vehicles/v1/${vehicleId}/images/full?make=${make}&model=${modelName}&year=${modelYear}`, {
       "Authorization": `Bearer ${userSession.accessToken}`,
       "api-version": REACT_APP_API_VERSION,
       "Application-Id": REACT_APP_APPLICATION_ID
@@ -117,4 +123,70 @@ const getCarImageFull = async (userSession: any, props: any) => {
   }
 }
 
-export { loginUser, refreshTokens, getCarImageFull }
+const getUserVehicles = async (userSession: any, props: any): Promise<[response: any, error: any]> => {
+  const curTimestampSeconds = Math.floor(new Date().getTime() / 1000);
+
+  if (curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
+    if (DEBUG_MODE) console.log('API CALL getUserVehicles', 'refreshing tokens');
+    await refreshTokens(userSession, props);
+    return await getUserVehicles(props.userSession.current, props);
+  }
+  else {
+    const postData = JSON.stringify({
+      query: `mutation {
+        getUserVehicles(accessToken: "${userSession.accessToken}"){
+          id
+          userId
+          fordProfileId
+          make
+          modelName
+          modelYear
+          color
+          nickname
+          modemEnabled
+          vehicleAuthorizationIndicator
+          serviceCompatible
+          lastUpdated
+          engineType
+          fuelLevelValue
+          fuelLevelDistanceToEmpty
+          mileage
+          odometer
+          remoteStartStatus
+          chargingStatusValue
+          ignitionStatusValue
+          doorStatus
+          vehicleLocationLongitude
+          vehicleLocationLatitude
+          vehicleLocationSpeed
+          vehicleLocationDirection
+          createdAt
+          updatedAt
+        }
+      }`,
+      variables: {}
+    });
+
+    let response = undefined;
+    let error = undefined;
+
+    const url = `${REACT_APP_API_URL}/api/graphql`;
+
+    if (DEBUG_MODE) console.log('API CALL getUserVehicles', url);
+
+    try {
+      const data = await axios.post(url, postData);
+      if (data.data.data) {
+        response = data.data.data.getUserVehicles;
+      }
+      error = data.data.errors;
+    }
+    catch (err) {
+      error = err;
+    }
+
+    return [response, error];
+  }
+}
+
+export { loginUser, refreshTokens, getCarImageFull, getUserVehicles }

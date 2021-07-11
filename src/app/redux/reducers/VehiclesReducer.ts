@@ -1,18 +1,16 @@
 const VEHICLES_INITIAL_STATE = {
-  current: [],
-  possible: [],
+  current: undefined,
 };
 
 export const vehiclesReducer = (state = VEHICLES_INITIAL_STATE, action) => {    
   switch (action.type) {
-    case 'ADD_VEHICLE':
-      const {
-        current,
+    case 'SET_VEHICLES':
+      let {
+        current
       } = state;
 
-      const addedVehicle = action.payload;
-      current.push(addedVehicle);
-      
+      current = action.payload;
+
       const newState = { current };
 
       return newState;

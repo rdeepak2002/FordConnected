@@ -146,7 +146,7 @@ const LoginView = (props: any) => {
             onChange={event => setLastname(event.nativeEvent.text)}
             style={styles.input}
           />
-          <Button title="Register" onPress={register} />
+          <Button title="Login" onPress={register} />
         </View>
       )}
     </SafeAreaView>

@@ -2,6 +2,7 @@ import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 import { DEBUG_MODE, REACT_APP_API_URL, REACT_APP_API_VERSION, REACT_APP_APPLICATION_ID, REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET } from '../../Constants';
 import { storeUserSession } from '../utilities/userSession';
+import { MMKV } from 'react-native-mmkv';
 
 const loginUser = async (username: string, firstName: string, lastName: string, code: string): Promise<[response: any, error: any]> => {
   const postData: any = JSON.stringify({
@@ -86,18 +87,18 @@ const refreshTokens = async (userSession: any, props: any): Promise<[response: a
   return [response, error];
 }
 
-const getCarImageFull = async (userSession: any, props: any) => {
+const getCarImageFull = async (userSession: any, props: any, vehicles) => {
   const curTimestampSeconds = Math.floor(new Date().getTime() / 1000);
 
   if (curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'refreshing tokens');
     await refreshTokens(userSession, props);
-    return await getCarImageFull(props.userSession.current, props);
+    return await getCarImageFull(props.userSession.current, props, vehicles);
   }
   else {
     if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'getting image');
 
-    const vehicle = props?.vehicles.current[0];
+    const vehicle = vehicles[0];
     const vehicleId = vehicle?.id;
     const make = vehicle?.make;
     const modelName = vehicle?.modelName;
@@ -178,6 +179,7 @@ const getUserVehicles = async (userSession: any, props: any): Promise<[response:
       const data = await axios.post(url, postData);
       if (data.data.data) {
         response = data.data.data.getUserVehicles;
+        MMKV.set('vehicles', JSON.stringify(response));
       }
       error = data.data.errors;
     }

@@ -45,18 +45,36 @@ const FeedView = (props: any) => {
     }
   }, []);
 
+  const userSession = props.userSession.current;
+  const vehiclesArray = props.vehicles.current;
+  const vehicle = vehiclesArray && vehiclesArray.length > 0 ? vehiclesArray[0] : undefined;
+  
+  let vehicleMake = '';
+
+  if(vehicle) {
+    switch (vehicle.make) {
+      case 'F':
+        vehicleMake = 'Ford';
+        break;
+      case 'L':
+        vehicleMake = 'Lincoln';
+        break;
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      {(props.userSession.current && carImgData)
+      {(userSession && vehicle && carImgData)
         ?
         <ScrollView style={{ display: 'flex', flexDirection: 'column' }}>
-          <Text style={styles.text}>Welcome {props.userSession.current.firstName}!</Text>
+          <Text style={[styles.text, {textAlign: 'center'}]}>Welcome {userSession.firstName}!</Text>
           <FullWidthImage source={{ uri: carImgData }} />
-          <Text style={styles.text}>{JSON.stringify(props.vehicles)}</Text>
+          <Text style={[styles.text, {textAlign: 'center'}]}>{vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>
+          <Text style={styles.text}>feed</Text>
         </ScrollView>
         :
         <View style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size='large' />
         </View>
       }
     </SafeAreaView>

@@ -47,7 +47,7 @@ const FeedView = (props: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {(props.userSession.current && carImgData) 
+      {(props.userSession.current && carImgData)
         ?
         <ScrollView style={{ display: 'flex', flexDirection: 'column' }}>
           <Text style={styles.text}>Welcome {props.userSession.current.firstName}!</Text>

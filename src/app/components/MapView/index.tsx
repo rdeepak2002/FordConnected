@@ -61,11 +61,11 @@ const MapViewScreen = (props: any) => {
                   (friendSelected)
                     ?
                     <>
-                      <Text style={styles.text}>{friendSelected.firstName} {friendSelected.lastName}</Text>
+                      <Text style={styles.text}>{friendSelected.firstName}'s {friendVehicleSelected.fullCarName}</Text>
                       {
                         friendVehicleSelected &&
                         <>
-                          <Text style={styles.text}>{friendVehicleSelected.fullCarName}</Text>
+                          <Text style={styles.text}></Text>
                           <Text style={styles.text}>TODO: show mileage and other car stuff</Text>
                         </>
                       }

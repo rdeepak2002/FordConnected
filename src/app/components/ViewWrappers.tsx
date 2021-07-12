@@ -1,15 +1,13 @@
 import React from 'react';
-
-import { AppContext } from '../../App';
-
 import GetStartedView from './GetStartedView';
 import HomeView from './HomeView';
 import SettingsView from './SettingsView';
 import LoginView from './LoginView';
-
 import FeedView from './FeedView';
-import MapView from './MapView';
 import SearchView from './SearchView';
+import MapViewScreen from './MapView';
+
+import { AppContext } from '../../App';
 
 const GetStartedViewWrapper = ({ navigation }) => (
   <AppContext.Consumer>
@@ -35,7 +33,7 @@ const FeedViewWrapper = ({ }) => (
 
 const MapViewWrapper = ({ }) => (
   <AppContext.Consumer>
-    {() => <MapView />}
+    {() => <MapViewScreen />}
   </AppContext.Consumer>
 );
 

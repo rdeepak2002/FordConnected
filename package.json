@@ -34,6 +34,7 @@
     "react-native-exit-app": "^1.1.0",
     "react-native-fullwidth-image": "^0.1.3",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-maps": "^0.28.0",
     "react-native-mmkv": "^1.2.0",
     "react-native-modal": "^12.0.2",
     "react-native-paper": "^4.9.2",

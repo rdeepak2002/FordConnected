@@ -64,10 +64,10 @@ const MapViewScreen = (props: any) => {
                       <Text style={styles.text}>{friendSelected.firstName}'s {friendVehicleSelected.fullCarName}</Text>
                       {
                         friendVehicleSelected &&
-                        <>
-                          <Text style={styles.text}></Text>
+                        <View style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
                           <Text style={styles.text}>TODO: show mileage and other car stuff</Text>
-                        </>
+                          <Text style={styles.text}>Last active on {new Date(friendVehicleSelected.updatedAt).toTimeString()}</Text>
+                        </View>
                       }
                     </>
                     :

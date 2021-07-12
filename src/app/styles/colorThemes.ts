@@ -10,7 +10,7 @@ export const lightColors = {
   navbarItemInactiveTint: '#5e6367',
   modalBg: '#ffffff',
   shadowColor: '#000000',
-  sendRequestBtn: '#ff7859',
+  sendRequestBtn: '#1973e8',
   loginBtn: '#59acff',
   activityIndicator: '#1973e8'
 };

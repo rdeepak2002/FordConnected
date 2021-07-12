@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Text, SafeAreaView, View, ScrollView } from 'react-native';
+import { Button, Text, SafeAreaView, View, ScrollView, Pressable } from 'react-native';
 import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
@@ -36,12 +36,16 @@ const SettingsView = (props: any) => {
 
         {/* <ThemeToggle /> */}
 
-        <Button
-          title="Log Out"
-          onPress={() => {
-            signOut();
-          }}
-        />
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
+          <Pressable
+            style={[styles.button, { backgroundColor: '#f25b50', width: '50%' }]}
+            onPress={() => {
+              signOut();
+            }}
+          >
+            <Text style={{ color: 'white', fontSize: 18 }}>Log Out</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

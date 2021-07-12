@@ -1,4 +1,4 @@
-import { Button, StyleSheet, SafeAreaView, Text, View } from 'react-native';
+import { Button, StyleSheet, SafeAreaView, Text, View, Pressable, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 
 import React from 'react';
@@ -17,16 +17,16 @@ const LoginView = (props: any) => {
   const fordAuthUri = `https://fordconnect.cv.ford.com/common/login/?make=F&application_id=afdc085b-377a-4351-b23e-5e1d35fb3700&client_id=30990062-9618-40e1-a27b-7c6bcb23658a&response_type=code&state=${authState}&redirect_uri=https%3A%2F%2Flocalhost%3A3000&scope=access`;
 
   const [uri] = useState<string>(fordAuthUri);
-  const [code, setCode] = useState<string>(undefined);
-  const [username, setUsername] = useState<string>(undefined);
+  const [code, setCode] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
   const [firstName, setFirstname] = useState<string>('');
   const [lastName, setLastname] = useState<string>('');
+  const [loggingIn, setLoggingIn] = useState<boolean>(false);
 
   const { signIn } = React.useContext(AuthContext);
   const { styles } = useTheme();
 
   let webView;
-
 
   const onNavigationStateChange = (webViewState: any) => {
     const parsedUrl = queryString.parse(webViewState.url);
@@ -72,6 +72,7 @@ const LoginView = (props: any) => {
 
   const register = () => {
     if (
+      !loggingIn &&
       code &&
       username &&
       firstName &&
@@ -79,11 +80,13 @@ const LoginView = (props: any) => {
       firstName.length > 0 &&
       lastName.length > 0
     ) {
+      setLoggingIn(true);
       // call server to login or register the user
       loginUser(username, firstName, lastName, code).then(([data, error]) => {
         if (error) {
           console.error('LOGIN ERROR', 'SERVER ERROR');
           console.error(error);
+          setLoggingIn(false);
         }
         else if (data) {
           const id = data.userId;
@@ -92,13 +95,15 @@ const LoginView = (props: any) => {
           const accessExpiresAtSeconds = parseInt(data.accessExpiresAtSeconds);
           const refreshToken = data.refreshToken;
           const refreshExpiresAtSeconds = parseInt(data.refreshExpiresAtSeconds);
-    
+
           props.setUserSession({ id: id, username: username, firstName: firstName, lastName: lastName, refreshToken: refreshToken, accessToken: accessToken, fordProfileId: fordProfileId, accessExpiresAtSeconds: accessExpiresAtSeconds, refreshExpiresAtSeconds: refreshExpiresAtSeconds });
-    
+
           signIn(id, username, firstName, lastName, refreshToken, accessToken, fordProfileId, accessExpiresAtSeconds, refreshExpiresAtSeconds);
+          setLoggingIn(false);
         }
         else {
           console.error('LOGIN ERROR', 'APP ERROR');
+          setLoggingIn(false);
         }
       });
     }
@@ -112,7 +117,7 @@ const LoginView = (props: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!code && (
+      {(code.length === 0 || username.length === 0) &&
         <WebView
           onMessage={handleSubmitBtn}
           ref={ref => (webView = ref)}
@@ -123,32 +128,41 @@ const LoginView = (props: any) => {
           startInLoadingState={false}
           style={styles.webView}
         />
-      )}
+      }
 
-      {code && username && (
-        <View>
-          <Text style={styles.text}>Other Information</Text>
-          <TextInput
-            placeholder={'username'}
-            value={username}
-            style={styles.input}
-            editable={false}
-          />
-          <TextInput
-            placeholder={'first name'}
-            value={firstName}
-            onChange={event => setFirstname(event.nativeEvent.text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder={'last name'}
-            value={lastName}
-            onChange={event => setLastname(event.nativeEvent.text)}
-            style={styles.input}
-          />
-          <Button title="Login" onPress={register} />
+      {(code.length > 0 && username.length > 0) &&
+        <View style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.text}>{'First Name'}</Text>
+            <TextInput
+              style={styles.input}
+              value={firstName}
+              onChange={event => setFirstname(event.nativeEvent.text)}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.text}>{'Last Name'}</Text>
+            <TextInput
+              style={styles.input}
+              value={lastName}
+              onChange={event => setLastname(event.nativeEvent.text)}
+            />
+          </View>
+
+          <Pressable
+            style={[styles.button, styles.loginBtn]}
+            onPress={register}
+          >
+            {loggingIn
+              ?
+              <ActivityIndicator size='small' color='white' />
+              :
+              <Text style={{ color: 'white', fontSize: 18 }}>Login</Text>
+            }
+          </Pressable>
         </View>
-      )}
+      }
     </SafeAreaView>
   );
 };

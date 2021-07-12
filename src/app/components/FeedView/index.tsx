@@ -10,9 +10,10 @@ import { bindActionCreators } from 'redux';
 import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles } from '../../redux/actions/VehiclesActions';
 import { connect } from 'react-redux';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const FeedView = (props: any) => {
-  const { styles } = useTheme();
+  const { styles, colors } = useTheme();
   const [carImgData, setCarImgData] = useState<any>(undefined);
 
   useEffect(() => {
@@ -76,7 +77,7 @@ const FeedView = (props: any) => {
         </ScrollView>
         :
         <View style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size='large' />
+          <ActivityIndicator size='large' color={colors.activityIndicator} />
         </View>
       }
     </SafeAreaView>

@@ -2,21 +2,22 @@ import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/Ionicons';
 
 import { useEffect, useState } from 'react';
-import { Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, Modal, RefreshControl } from 'react-native';
+import { Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, Modal, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getFriends } from '../../api/api';
+import { addFriend, getFriends } from '../../api/api';
 import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles } from '../../redux/actions/VehiclesActions';
 import { useTheme } from '../../styles/ThemeContext';
 import { retrieveUserSession } from '../../utilities/userSession';
 
 const SearchView = (props: any) => {
-  const { styles, isDark } = useTheme()
+  const { styles, isDark, colors } = useTheme()
   const [friendsList, setFriendsList] = useState<any>(undefined);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [friendUsername, setFriendUsername] = useState<string>('');
 
   useEffect(() => {
     if (!friendsList) {
@@ -112,18 +113,36 @@ const SearchView = (props: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View>
-          <Text style={styles.text}>hello world</Text>
-        </View>
-      </Modal>
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+          supportedOrientations={['portrait', 'landscape']}
+        >
+          <TouchableWithoutFeedback onPress={() => { setModalVisible(false) }}>
+            <View style={[styles.centeredView]}>
+              <View style={[styles.modalView, { width: '80%' }]}>
+                <TextInput
+                  placeholder={'username'}
+                  value={friendUsername}
+                  onChange={event => setFriendUsername(event.nativeEvent.text)}
+                  style={styles.input}
+                />
+                <Pressable
+                  style={[styles.button, styles.sendRequestBtn]}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={{color: 'white'}}>Send Request</Text>
+                </Pressable>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </View>
       {(friendsList)
         ?
         <ScrollView
@@ -135,19 +154,21 @@ const SearchView = (props: any) => {
           }
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {friendsList.length > 0 
+            {friendsList.length > 0
               ?
               <Text style={[styles.text, { fontSize: 24, marginTop: 5, marginBottom: 5, marginLeft: 15, fontWeight: 'bold' }]}>{friendsList.length} {friendsList.length > 1 ? 'Friends' : 'Friend'}</Text>
               :
               <Text style={[styles.text, { fontSize: 24, marginTop: 5, marginBottom: 5, marginLeft: 15, fontWeight: 'bold' }]}>No Friends</Text>
             }
-            <MaterialCommunityIcons name='add-circle-outline' color={isDark ? 'white' : 'black'} size={40} style={{ marginLeft: 'auto', marginRight: 15}} />
+            <Pressable onPress={() => { setModalVisible(true) }} style={{ marginLeft: 'auto', marginRight: 15 }}>
+              <MaterialCommunityIcons name='add-circle-outline' color={isDark ? 'white' : 'black'} size={40} />
+            </Pressable>
           </View>
           {renderFriendsList()}
         </ScrollView>
         :
         <View style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size='large' />
+          <ActivityIndicator size='large' color={colors.activityIndicator} />
         </View>
       }
     </SafeAreaView>

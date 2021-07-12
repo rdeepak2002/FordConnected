@@ -11,10 +11,23 @@ const getStyles = (colors: any) => {
       backgroundColor: colors.background,
     },
     input: {
-      color: colors.text,
       height: 40,
-      margin: 12,
-      borderWidth: 1,
+      width: 300,
+      paddingHorizontal: 5,
+      backgroundColor: 'white',
+      marginBottom: 5,
+      borderRadius: 2
+    },
+    inputContainer: {
+      marginBottom: 20,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.23,
+      shadowRadius: 2.62,
+      elevation: 4,
     },
     text: {
       color: colors.text,
@@ -33,8 +46,31 @@ const getStyles = (colors: any) => {
       paddingHorizontal: 32,
       borderRadius: 4,
       elevation: 3,
-      backgroundColor: 'white',
-      borderColor: 'black'
+    },
+    sendRequestBtn: {
+      backgroundColor: colors.sendRequestBtn,
+    },
+    loginBtn: {
+      backgroundColor: colors.loginBtn,
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    modalView: {
+      backgroundColor: colors.modalBg,
+      borderRadius: 20,
+      padding: 35,
+      alignItems: "center",
+      shadowColor: colors.shadowColor,
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5
     },
   });
   return styles;

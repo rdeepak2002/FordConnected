@@ -7,7 +7,12 @@ export const lightColors = {
   error: '#D32F2F',
   navbarBg: '#ffffff',
   navbarItemActiveTint: '#1973e8',
-  navbarItemInactiveTint: '#5e6367'
+  navbarItemInactiveTint: '#5e6367',
+  modalBg: '#ffffff',
+  shadowColor: '#000000',
+  sendRequestBtn: '#ff7859',
+  loginBtn: '#59acff',
+  activityIndicator: '#1973e8'
 };
 
 // Dark theme colors
@@ -19,5 +24,10 @@ export const darkColors = {
   error: '#EF9A9A',
   navbarBg: '#303133',
   navbarItemActiveTint: '#89b4f7',
-  navbarItemInactiveTint: '#969ba1'
+  navbarItemInactiveTint: '#969ba1',
+  modalBg: '#303133',
+  shadowColor: '#ffffff00',
+  sendRequestBtn: '#8059ff',
+  loginBtn: '#8059ff',
+  activityIndicator: 'white'
 };

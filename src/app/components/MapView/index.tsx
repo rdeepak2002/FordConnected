@@ -66,6 +66,7 @@ const MapViewScreen = (props: any) => {
                         friendVehicleSelected &&
                         <>
                           <Text style={styles.text}>{friendVehicleSelected.fullCarName}</Text>
+                          <Text style={styles.text}>TODO: show mileage and other car stuff</Text>
                         </>
                       }
                     </>
@@ -118,7 +119,7 @@ const MapViewScreen = (props: any) => {
                       setFriendVehicleSelected(friendVehicle);
                       setModalVisible(true);
                     }}
-                    title='click for more info'
+                    title='click here for more info'
                   >
                     <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5 }}>
                       <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}>{friendName}</Text>

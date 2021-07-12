@@ -3,7 +3,7 @@ import FullWidthImage from 'react-native-fullwidth-image';
 
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, SafeAreaView, View, ScrollView } from 'react-native';
-import { getCarImageFull, getUserVehicles } from '../../api/api';
+import { getCarImageFull, getVehicles } from '../../api/api';
 import { useTheme } from '../../styles/ThemeContext';
 import { retrieveUserSession } from '../../utilities/userSession';
 import { bindActionCreators } from 'redux';
@@ -18,10 +18,12 @@ const FeedView = (props: any) => {
   useEffect(() => {
     const loadCarImage = async () => {
       const userSession = await retrieveUserSession();
+      setUserSession(userSession);
+      
       let vehicles = undefined;
 
       if (userSession) {
-        await getUserVehicles(userSession, props).then(([data, error]) => {
+        await getVehicles(userSession, props).then(([data, error]) => {
           if (error) {
             console.error('GET VEHICLES ERROR', 'SERVER ERROR');
             console.error(error);

@@ -19,10 +19,23 @@ const getStyles = (colors: any) => {
     text: {
       color: colors.text,
     },
+    textSecondary: {
+      color: colors.textSecondary,
+    },
     webView: {
       flex: 1,
       marginTop: 20,
-    }
+    },
+    button: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 32,
+      borderRadius: 4,
+      elevation: 3,
+      backgroundColor: 'white',
+      borderColor: 'black'
+    },
   });
   return styles;
 }

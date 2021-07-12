@@ -67,19 +67,12 @@ const refreshTokens = async (userSession: any, props: any): Promise<[response: a
     if (data.data.data) {
       response = data.data.data.refreshTokens;
 
-      // let newUserSession: any = {};
-
       userSession.id = response.userId;
-      // newUserSession.username = userSession.username;
-      // newUserSession.firstName = userSession.firstName;
-      // newUserSession.lastName = userSession.lastName;
       userSession.refreshToken = response.refreshToken;
       userSession.accessToken = response.accessToken;
       userSession.fordProfileId = response.fordProfileId;
       userSession.accessExpiresAtSeconds = parseInt(response.accessExpiresAtSeconds);
       userSession.refreshExpiresAtSeconds = parseInt(response.refreshExpiresAtSeconds);
-
-      // userSession = newUserSession;
 
       props.setUserSession(userSession);
 
@@ -99,8 +92,8 @@ const getCarImageFull = async (userSession: any, props: any, vehicles) => {
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'refreshing tokens');
-    await refreshTokens(props.userSession.current, props);
-    return await getCarImageFull(props.userSession.current, props, vehicles);
+    await refreshTokens(userSession.current, props);
+    return await getCarImageFull(userSession.current, props, vehicles);
   }
   else {
     if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'getting image');
@@ -136,8 +129,8 @@ const getVehicles = async (userSession: any, props: any): Promise<[response: any
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getUserVehicles', 'refreshing tokens');
-    await refreshTokens(props.userSession.current, props);
-    return await getVehicles(props.userSession.current, props);
+    await refreshTokens(userSession.current, props);
+    return await getVehicles(userSession.current, props);
   }
   else {
     const postData = JSON.stringify({
@@ -203,8 +196,8 @@ const addFriend = async (usernameOfFriend: string, userSession: any, props: any)
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL addFriend', 'refreshing tokens');
-    await refreshTokens(props.userSession.current, props);
-    return await getVehicles(props.userSession.current, props);
+    await refreshTokens(userSession.current, props);
+    return await getVehicles(userSession.current, props);
   }
   else {
     const postData = JSON.stringify({
@@ -241,8 +234,8 @@ const getFriends = async (userSession: any, props: any): Promise<[response: any,
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getFriends', 'refreshing tokens');
-    await refreshTokens(props.userSession.current, props);
-    return await getVehicles(props.userSession.current, props);
+    await refreshTokens(userSession.current, props);
+    return await getVehicles(userSession.current, props);
   }
   else {
     const postData = JSON.stringify({

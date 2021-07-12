@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable } from 'react-native';
+import { Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, Modal, RefreshControl } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -13,42 +13,44 @@ import { retrieveUserSession } from '../../utilities/userSession';
 const SearchView = (props: any) => {
   const { styles } = useTheme()
   const [friendsList, setFriendsList] = useState<any>(undefined);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    const loadFriends = async () => {
-      const userSession = await retrieveUserSession();
-      setUserSession(userSession);
-
-      if (userSession) {
-        await getFriends(userSession, props).then(([data, error]) => {
-          if (error) {
-            console.error('GET FRIENDS ERROR', 'SERVER ERROR');
-            console.error(error);
-          }
-          else if (data) {
-            const friendsListNotParsed: Array<any> = data;
-            let friendsList: Array<any> = [];
-
-            for (let i = 0; i < friendsListNotParsed.length; i++) {
-              const person1 = friendsListNotParsed[i].pair[0];
-              const person2 = friendsListNotParsed[i].pair[1];
-              const friend = (person1.id === userSession.id) ? person2 : person1;
-              friendsList.push(friend);
-            }
-
-            setFriendsList(friendsList);
-          }
-          else {
-            console.error('GET FRIENDS ERROR', 'APP ERROR');
-          }
-        });
-      }
-    };
-
     if (!friendsList) {
       loadFriends();
     }
   }, []);
+
+  const loadFriends = async () => {
+    const userSession = await retrieveUserSession();
+    setUserSession(userSession);
+
+    if (userSession) {
+      await getFriends(userSession, props).then(([data, error]) => {
+        if (error) {
+          console.error('GET FRIENDS ERROR', 'SERVER ERROR');
+          console.error(error);
+        }
+        else if (data) {
+          const friendsListNotParsed: Array<any> = data;
+          let friendsList: Array<any> = [];
+
+          for (let i = 0; i < friendsListNotParsed.length; i++) {
+            const person1 = friendsListNotParsed[i].pair[0];
+            const person2 = friendsListNotParsed[i].pair[1];
+            const friend = (person1.id === userSession.id) ? person2 : person1;
+            friendsList.push(friend);
+          }
+
+          setFriendsList(friendsList);
+        }
+        else {
+          console.error('GET FRIENDS ERROR', 'APP ERROR');
+        }
+      });
+    }
+  };
 
   const renderFriendsList = () => {
     if (friendsList) {
@@ -97,15 +99,45 @@ const SearchView = (props: any) => {
     }
   }
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    loadFriends().then(()=>{
+      setRefreshing(false);
+    });
+  }, []);
+
+
   return (
     <SafeAreaView style={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View>
+          <Text style={styles.text}>hello world</Text>
+        </View>
+      </Modal>
       {(friendsList)
         ?
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+        >
           <View style={{ flexDirection: 'row' }}>
 
           </View>
-          <Text style={[styles.text, {fontSize: 24, marginTop: 5, marginBottom: 5, marginLeft: 15, fontWeight: 'bold'}]}>{friendsList.length} {friendsList.length > 1 ? 'Friends' : 'Friend'}</Text>
+          {friendsList.length > 0 &&
+            <Text style={[styles.text, { fontSize: 24, marginTop: 5, marginBottom: 5, marginLeft: 15, fontWeight: 'bold' }]}>{friendsList.length} {friendsList.length > 1 ? 'Friends' : 'Friend'}</Text>
+          }
           {renderFriendsList()}
         </ScrollView>
         :

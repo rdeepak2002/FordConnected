@@ -2,15 +2,11 @@ import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { addFriend } from '../../api/api';
-import { setUserSession } from '../../redux/actions/UserSessionActions';
-import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
-import { setFriends } from '../../redux/actions/FriendsActions';
 import { useTheme } from '../../styles/ThemeContext';
 import { loadFriends, mapDispatchToProps, mapStateToProps } from '../HomeView';
 

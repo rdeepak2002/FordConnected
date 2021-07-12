@@ -20,6 +20,7 @@
     "@types/form-data": "^2.5.0",
     "@types/query-string": "^6.3.0",
     "@types/react-native": "^0.64.10",
+    "@types/react-native-maps": "^0.24.2",
     "@types/react-native-modal": "^4.1.1",
     "@types/react-redux": "^7.1.16",
     "axios": "^0.21.1",

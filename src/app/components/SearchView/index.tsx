@@ -12,6 +12,7 @@ import { loadFriends, mapDispatchToProps, mapStateToProps } from '../HomeView';
 
 const SearchView = (props: any) => {
   const { styles, isDark, colors } = useTheme()
+  
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [friendUsername, setFriendUsername] = useState<string>('');

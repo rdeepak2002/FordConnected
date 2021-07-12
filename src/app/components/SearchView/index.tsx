@@ -7,25 +7,21 @@ import { Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, 
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addFriend, getFriends } from '../../api/api';
+import { addFriend } from '../../api/api';
 import { setUserSession } from '../../redux/actions/UserSessionActions';
-import { setVehicles } from '../../redux/actions/VehiclesActions';
+import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setFriends } from '../../redux/actions/FriendsActions';
 import { useTheme } from '../../styles/ThemeContext';
-import { retrieveUserSession } from '../../utilities/userSession';
-import { loadFriends } from '../HomeView';
+import { loadFriends, mapDispatchToProps, mapStateToProps } from '../HomeView';
 
 const SearchView = (props: any) => {
   const { styles, isDark, colors } = useTheme()
-  const [friendsList, setFriendsList] = useState<any>(undefined);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [friendUsername, setFriendUsername] = useState<string>('');
   const [makingFriendRequest, setMakingFriendRequest] = useState<boolean>(false);
 
-  useEffect(() => {
-    setFriendsList(props.friends.current);
-  }, [props.userSession.current, props.friends.current]);
+  const friendsList = props.friends.current;
 
   const renderFriendsList = () => {
     if (friendsList) {
@@ -191,15 +187,5 @@ const SearchView = (props: any) => {
     </SafeAreaView >
   );
 };
-
-const mapStateToProps = (state) => {
-  const { userSession, vehicles, friends } = state
-  return { userSession, vehicles, friends }
-};
-
-const mapDispatchToProps = dispatch => (
-  bindActionCreators({}, dispatch)
-);
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchView);

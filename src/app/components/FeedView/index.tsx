@@ -8,6 +8,7 @@ import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setFriends } from '../../redux/actions/FriendsActions';
 import { connect } from 'react-redux';
+import { mapDispatchToProps, mapStateToProps } from '../HomeView';
 
 const FeedView = (props: any) => {
   const { styles, colors } = useTheme();
@@ -48,14 +49,5 @@ const FeedView = (props: any) => {
     </SafeAreaView>
   );
 };
-
-const mapStateToProps = (state) => {
-  const { userSession, vehicles, friends } = state
-  return { userSession, vehicles, friends }
-};
-
-const mapDispatchToProps = dispatch => (
-  bindActionCreators({}, dispatch)
-);
 
 export default connect(mapStateToProps, mapDispatchToProps)(FeedView);

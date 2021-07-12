@@ -40,7 +40,7 @@ const HomeView = (props: any) => {
         });
       }
 
-      if (!props.vehicles.carImage) {
+      if (!props.vehicles.current || !props.vehicles.carImage) {
         loadVehiclesAndCarImage(props).then(() => {
           if (DEBUG_MODE) console.log('vehicles and car image loaded');
         });
@@ -200,12 +200,12 @@ export const loadFriends = async (props: any) => {
   }
 };
 
-const mapStateToProps = (state) => {
+export const mapStateToProps = (state) => {
   const { userSession, vehicles, friends } = state
   return { userSession, vehicles, friends }
 };
 
-const mapDispatchToProps = dispatch => (
+export const mapDispatchToProps = dispatch => (
   bindActionCreators({
     setUserSession,
     setVehicles,

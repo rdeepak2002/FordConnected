@@ -8,9 +8,8 @@ import { TextInput } from 'react-native-gesture-handler';
 import { AuthContext } from '../../../App';
 import { useTheme } from '../../styles/ThemeContext';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { loginUser } from '../../api/api';
+import { mapDispatchToProps, mapStateToProps } from '../HomeView';
 
 const LoginView = (props: any) => {
   const authState = '27252';
@@ -100,6 +99,11 @@ const LoginView = (props: any) => {
 
           signIn(id, username, firstName, lastName, refreshToken, accessToken, fordProfileId, accessExpiresAtSeconds, refreshExpiresAtSeconds);
           setLoggingIn(false);
+
+          setCode('');
+          setUsername('');
+          setFirstname('');
+          setLastname('');
         }
         else {
           console.error('LOGIN ERROR', 'APP ERROR');
@@ -166,16 +170,5 @@ const LoginView = (props: any) => {
     </SafeAreaView>
   );
 };
-
-const mapStateToProps = (state) => {
-  const { userSession } = state
-  return { userSession }
-};
-
-const mapDispatchToProps = dispatch => (
-  bindActionCreators({
-    setUserSession,
-  }, dispatch)
-);
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginView);

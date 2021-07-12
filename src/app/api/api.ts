@@ -1,7 +1,7 @@
 import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 import { DEBUG_MODE, REACT_APP_API_URL, REACT_APP_API_VERSION, REACT_APP_APPLICATION_ID, REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET } from '../../Constants';
-import { storeUserSession } from '../utilities/userSession';
+import { retrieveUserSession, storeUserSession } from '../utilities/userSession';
 import { MMKV } from 'react-native-mmkv';
 
 const loginUser = async (username: string, firstName: string, lastName: string, code: string): Promise<[response: any, error: any]> => {
@@ -41,6 +41,9 @@ const loginUser = async (username: string, firstName: string, lastName: string, 
 }
 
 const refreshTokens = async (userSession: any, props: any): Promise<[response: any, error: any]> => {
+  const userSessionFromStorage = await retrieveUserSession();
+  userSession = userSessionFromStorage;
+
   const postData: any = JSON.stringify({
     query: `mutation {
       refreshTokens(refreshToken: "${userSession.refreshToken}"){
@@ -92,8 +95,9 @@ const getCarImageFull = async (userSession: any, props: any, vehicles) => {
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'refreshing tokens');
-    await refreshTokens(userSession.current, props);
-    return await getCarImageFull(userSession.current, props, vehicles);
+    await refreshTokens(userSession, props);
+    userSession = await retrieveUserSession();
+    return await getCarImageFull(userSession, props, vehicles);
   }
   else {
     if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'getting image');
@@ -129,8 +133,9 @@ const getVehicles = async (userSession: any, props: any): Promise<[response: any
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getUserVehicles', 'refreshing tokens');
-    await refreshTokens(userSession.current, props);
-    return await getVehicles(userSession.current, props);
+    await refreshTokens(userSession, props);
+    userSession = await retrieveUserSession();
+    return await getVehicles(userSession, props);
   }
   else {
     const postData = JSON.stringify({
@@ -196,8 +201,9 @@ const addFriend = async (usernameOfFriend: string, userSession: any, props: any)
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL addFriend', 'refreshing tokens');
-    await refreshTokens(userSession.current, props);
-    return await getVehicles(userSession.current, props);
+    await refreshTokens(userSession, props);
+    userSession = await retrieveUserSession();
+    return await getVehicles(userSession, props);
   }
   else {
     const postData = JSON.stringify({
@@ -234,8 +240,9 @@ const getFriends = async (userSession: any, props: any): Promise<[response: any,
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getFriends', 'refreshing tokens');
-    await refreshTokens(userSession.current, props);
-    return await getVehicles(userSession.current, props);
+    await refreshTokens(userSession, props);
+    userSession = await retrieveUserSession();
+    return await getVehicles(userSession, props);
   }
   else {
     const postData = JSON.stringify({

@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/Ionicons';
 
+import { useEffect, useState } from 'react';
 import { Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, Modal, RefreshControl } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
@@ -11,7 +13,7 @@ import { useTheme } from '../../styles/ThemeContext';
 import { retrieveUserSession } from '../../utilities/userSession';
 
 const SearchView = (props: any) => {
-  const { styles } = useTheme()
+  const { styles, isDark } = useTheme()
   const [friendsList, setFriendsList] = useState<any>(undefined);
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -102,7 +104,7 @@ const SearchView = (props: any) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
-    loadFriends().then(()=>{
+    loadFriends().then(() => {
       setRefreshing(false);
     });
   }, []);
@@ -132,12 +134,15 @@ const SearchView = (props: any) => {
             />
           }
         >
-          <View style={{ flexDirection: 'row' }}>
-
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {friendsList.length > 0 
+              ?
+              <Text style={[styles.text, { fontSize: 24, marginTop: 5, marginBottom: 5, marginLeft: 15, fontWeight: 'bold' }]}>{friendsList.length} {friendsList.length > 1 ? 'Friends' : 'Friend'}</Text>
+              :
+              <Text style={[styles.text, { fontSize: 24, marginTop: 5, marginBottom: 5, marginLeft: 15, fontWeight: 'bold' }]}>No Friends</Text>
+            }
+            <MaterialCommunityIcons name='add-circle-outline' color={isDark ? 'white' : 'black'} size={40} style={{ marginLeft: 'auto', marginRight: 15}} />
           </View>
-          {friendsList.length > 0 &&
-            <Text style={[styles.text, { fontSize: 24, marginTop: 5, marginBottom: 5, marginLeft: 15, fontWeight: 'bold' }]}>{friendsList.length} {friendsList.length > 1 ? 'Friends' : 'Friend'}</Text>
-          }
           {renderFriendsList()}
         </ScrollView>
         :

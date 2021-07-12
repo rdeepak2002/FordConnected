@@ -1,19 +1,27 @@
 const VEHICLES_INITIAL_STATE = {
   current: undefined,
+  carImage: undefined
 };
 
-export const vehiclesReducer = (state = VEHICLES_INITIAL_STATE, action) => {    
+export const vehiclesReducer = (state = VEHICLES_INITIAL_STATE, action) => {
+  let {
+    current,
+    carImage
+  } = state;
+
   switch (action.type) {
     case 'SET_VEHICLES':
-      let {
-        current
-      } = state;
-
       current = action.payload;
 
-      const newState = { current };
+      const newVehiclesState = { current, carImage };
 
-      return newState;
+      return newVehiclesState;
+    case 'SET_CAR_IMAGE':
+      carImage = action.payload;
+
+      const newCarImageState = { current, carImage };
+
+      return newCarImageState;
     default:
       return state
   }

@@ -4,3 +4,10 @@ export const setVehicles = vehicles => (
     payload: vehicles,
   }
 );
+
+export const setCarImage = carImage => (
+  {
+    type: 'SET_CAR_IMAGE',
+    payload: carImage,
+  }
+);

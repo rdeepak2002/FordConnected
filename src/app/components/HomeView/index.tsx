@@ -79,6 +79,8 @@ const HomeView = (props: any) => {
     //   clearTimeout(updateUserVehiclesTimer);
     // };
     if (!bgTimerInit) {
+      console.log('staring background timer');
+
       setBgTimerInit(true);
 
       BackgroundTimer.runBackgroundTimer(() => {
@@ -96,9 +98,10 @@ const HomeView = (props: any) => {
       }, TEN_SECONDS);
     }
 
-    return function cleanup() {
-      BackgroundTimer.stopBackgroundTimer();
-    };
+    // return function cleanup() {
+    //   console.log('clearing background timer');
+    //   BackgroundTimer.stopBackgroundTimer();
+    // };
   }, [initLoad, bgTimerInit]);
 
   return (

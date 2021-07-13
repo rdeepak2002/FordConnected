@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/Foundation';
+import BackgroundTimer from 'react-native-background-timer';
 
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,7 +13,7 @@ import {
 import { useTheme } from '../../styles/ThemeContext';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AuthContext } from '../../../App';
 import { retrieveUserSession } from '../../utilities/userSession';
 import { getCarImageFull, getFriends, getVehicles, refreshTokens, updateUserVehicles } from '../../api/api';
@@ -29,6 +30,7 @@ const HomeView = (props: any) => {
   const { signOut } = React.useContext(AuthContext);
 
   const [initLoad, setInitLoad] = useState<boolean>(false);
+  const [bgTimerInit, setBgTimerInit] = useState<boolean>(false);
 
   useEffect(() => {
     if (!initLoad) {
@@ -53,30 +55,51 @@ const HomeView = (props: any) => {
       }
     }
 
-    let updateVehiclesAndCarImageTimer = setTimeout(() => {
-      loadVehiclesAndCarImage(props).then(() => {
-        if (DEBUG_MODE) console.log('vehicles and car image updated');
-      });
-    }, TEN_SECONDS);
+    // let updateVehiclesAndCarImageTimer = setTimeout(() => {
+    // loadVehiclesAndCarImage(props).then(() => {
+    //   if (DEBUG_MODE) console.log('vehicles and car image updated');
+    // });
+    // }, TEN_SECONDS);
 
-    let updateFriendsTimer = setTimeout(() => {
-      loadFriends(props).then(() => {
-        if (DEBUG_MODE) console.log('friends updated');
-      });
-    }, TEN_SECONDS);
+    // let updateFriendsTimer = setTimeout(() => {
+    // loadFriends(props).then(() => {
+    //   if (DEBUG_MODE) console.log('friends updated');
+    // });
+    // }, TEN_SECONDS);
 
-    let updateUserVehiclesTimer = setTimeout(() => {
-      updateUserVehiclesOnDemand(props).then(() => {
-        if (DEBUG_MODE) console.log('user vehicles updated on demand');
-      });
-    }, TEN_SECONDS);
+    // let updateUserVehiclesTimer = setTimeout(() => {
+    // updateUserVehiclesOnDemand(props).then(() => {
+    //   if (DEBUG_MODE) console.log('user vehicles updated on demand');
+    // });
+    // }, TEN_SECONDS);
 
-    return () => {
-      clearTimeout(updateVehiclesAndCarImageTimer);
-      clearTimeout(updateFriendsTimer);
-      clearTimeout(updateUserVehiclesTimer);
+    // return () => {
+    //   clearTimeout(updateVehiclesAndCarImageTimer);
+    //   clearTimeout(updateFriendsTimer);
+    //   clearTimeout(updateUserVehiclesTimer);
+    // };
+    if (!bgTimerInit) {
+      setBgTimerInit(true);
+
+      BackgroundTimer.runBackgroundTimer(() => {
+        loadVehiclesAndCarImage(props).then(() => {
+          if (DEBUG_MODE) console.log('vehicles and car image updated');
+        });
+
+        loadFriends(props).then(() => {
+          if (DEBUG_MODE) console.log('friends updated');
+        });
+
+        updateUserVehiclesOnDemand(props).then(() => {
+          if (DEBUG_MODE) console.log('user vehicles updated on demand');
+        });
+      }, TEN_SECONDS);
+    }
+
+    return function cleanup() {
+      BackgroundTimer.stopBackgroundTimer();
     };
-  }, [initLoad, props.userSession.current, props.vehicles.current, props.vehicles.carImage, props.friends.current]);
+  }, [initLoad, bgTimerInit]);
 
   return (
     <NavigationContainer {...navProps} theme={isDark ? DarkTheme : DefaultTheme}>

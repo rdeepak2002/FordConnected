@@ -30,6 +30,7 @@
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-appearance": "^0.3.4",
+    "react-native-background-timer": "^2.4.1",
     "react-native-dotenv": "^3.0.0",
     "react-native-encrypted-storage": "^4.0.2",
     "react-native-exit-app": "^1.1.0",

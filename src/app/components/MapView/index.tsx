@@ -20,7 +20,6 @@ const MapViewScreen = (props: any) => {
   const [friends, setFriends] = useState<any>(undefined);
   const [friendSelected, setFriendSelected] = useState<any>(undefined);
   const [friendVehicleSelected, setFriendVehicleSelected] = useState<any>(undefined);
-  const [forceRefresh, setForceRefresh] = useState<string>('');
   const [markers, setMarkers] = useState<any>(undefined);
 
   useEffect(() => {
@@ -45,7 +44,6 @@ const MapViewScreen = (props: any) => {
 
     setFriends(friends);
     updateMarkers();
-    // setForceRefresh(JSON.stringify(friends) + JSON.stringify(vehicles));
   }, [props.vehicles.current, props.friends.current]);
 
   const updateMarkers = () => {
@@ -144,7 +142,6 @@ const MapViewScreen = (props: any) => {
             style={{ flex: 1 }}
             region={region}
             showsUserLocation={true}
-            key={forceRefresh}
           >
             {markers}
           </MapView>

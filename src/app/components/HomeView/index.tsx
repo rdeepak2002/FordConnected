@@ -15,11 +15,11 @@ import { connect } from 'react-redux';
 import { useEffect } from 'react';
 import { AuthContext } from '../../../App';
 import { retrieveUserSession } from '../../utilities/userSession';
-import { getCarImageFull, getFriends, getVehicles, refreshTokens } from '../../api/api';
+import { getCarImageFull, getFriends, getVehicles, refreshTokens, updateUserVehicles } from '../../api/api';
 import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setFriends } from '../../redux/actions/FriendsActions';
-import { DEBUG_MODE, ONE_MINUTE, TEN_SECONDS } from '../../../Constants';
+import { DEBUG_MODE, ONE_MINUTE, TEN_SECONDS, THIRTY_SECONDS } from '../../../Constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -65,9 +65,16 @@ const HomeView = (props: any) => {
       });
     }, TEN_SECONDS);
 
+    let updateUserVehiclesTimer = setTimeout(() => {
+      updateUserVehicles(props.userSession.current, props).then(() => {
+        if (DEBUG_MODE) console.log('user vehicles updated');
+      });
+    }, THIRTY_SECONDS);
+
     return () => {
       clearTimeout(updateVehiclesAndCarImageTimer);
       clearTimeout(updateFriendsTimer);
+      clearTimeout(updateUserVehiclesTimer);
     };
   }, [initLoad, props.userSession.current, props.vehicles.current, props.vehicles.carImage, props.friends.current]);
 

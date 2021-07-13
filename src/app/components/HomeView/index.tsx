@@ -19,7 +19,7 @@ import { getCarImageFull, getFriends, getVehicles, refreshTokens } from '../../a
 import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setFriends } from '../../redux/actions/FriendsActions';
-import { DEBUG_MODE } from '../../../Constants';
+import { DEBUG_MODE, ONE_MINUTE, TEN_SECONDS } from '../../../Constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -52,6 +52,23 @@ const HomeView = (props: any) => {
         });
       }
     }
+
+    let updateVehiclesAndCarImageTimer = setTimeout(() => {
+      loadVehiclesAndCarImage(props).then(() => {
+        if (DEBUG_MODE) console.log('vehicles and car image updated');
+      });
+    }, TEN_SECONDS);
+
+    let updateFriendsTimer = setTimeout(() => {
+      loadFriends(props).then(() => {
+        if (DEBUG_MODE) console.log('friends updated');
+      });
+    }, TEN_SECONDS);
+
+    return () => {
+      clearTimeout(updateVehiclesAndCarImageTimer);
+      clearTimeout(updateFriendsTimer);
+    };
   }, [initLoad, props.userSession.current, props.vehicles.current, props.vehicles.carImage, props.friends.current]);
 
   return (
@@ -181,7 +198,7 @@ export const loadFriends = async (props: any) => {
         console.error(error);
       }
       else if (data) {
-        const friendsListNotParsed: Array<any> = data;
+        const friendsListNotParsed: any = data;
         let friendsList: Array<any> = [];
 
         for (let i = 0; i < friendsListNotParsed.length; i++) {

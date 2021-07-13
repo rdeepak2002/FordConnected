@@ -95,6 +95,7 @@ const getCarImageFull = async (userSession: any, props: any, vehicles) => {
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getCarImageFull', 'refreshing tokens');
+    userSession = await retrieveUserSession();
     await refreshTokens(userSession, props);
     userSession = await retrieveUserSession();
     return await getCarImageFull(userSession, props, vehicles);
@@ -133,6 +134,7 @@ const getVehicles = async (userSession: any, props: any): Promise<[response: any
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getUserVehicles', 'refreshing tokens');
+    userSession = await retrieveUserSession();
     await refreshTokens(userSession, props);
     userSession = await retrieveUserSession();
     return await getVehicles(userSession, props);
@@ -201,6 +203,7 @@ const addFriend = async (usernameOfFriend: string, userSession: any, props: any)
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL addFriend', 'refreshing tokens');
+    userSession = await retrieveUserSession();
     await refreshTokens(userSession, props);
     userSession = await retrieveUserSession();
     return await getVehicles(userSession, props);
@@ -240,6 +243,7 @@ const getFriends = async (userSession: any, props: any): Promise<[response: any,
 
   if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
     if (DEBUG_MODE) console.log('API CALL getFriends', 'refreshing tokens');
+    userSession = await retrieveUserSession();
     await refreshTokens(userSession, props);
     userSession = await retrieveUserSession();
     return await getVehicles(userSession, props);

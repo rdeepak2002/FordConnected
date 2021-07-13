@@ -20,31 +20,87 @@ const MapViewScreen = (props: any) => {
   const [friends, setFriends] = useState<any>(undefined);
   const [friendSelected, setFriendSelected] = useState<any>(undefined);
   const [friendVehicleSelected, setFriendVehicleSelected] = useState<any>(undefined);
+  const [forceRefresh, setForceRefresh] = useState<string>('');
+  const [markers, setMarkers] = useState<any>(undefined);
 
   useEffect(() => {
-    if (!region) {
-      let vehicles = props.vehicles.current;
-      let friends = props.friends.current;
+    let vehicles = props.vehicles.current;
+    let friends = props.friends.current;
 
-      if (vehicles && !region) {
-        let userVehicle;
+    if (vehicles && !region) {
+      let userVehicle;
 
-        if (vehicles.length > 0) {
-          userVehicle = vehicles[0];
-          setVehicle(userVehicle);
-        }
-
-        setRegion({
-          latitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLatitude) : 0,
-          longitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLongitude) : 0,
-          latitudeDelta: userVehicle ? latitudeDelta : 100,
-          longitudeDelta: userVehicle ? longitudeDelta : 100
-        });
+      if (vehicles.length > 0) {
+        userVehicle = vehicles[0];
+        setVehicle(userVehicle);
       }
 
-      setFriends(friends);
+      setRegion({
+        latitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLatitude) : 0,
+        longitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLongitude) : 0,
+        latitudeDelta: userVehicle ? latitudeDelta : 100,
+        longitudeDelta: userVehicle ? longitudeDelta : 100
+      });
     }
+
+    setFriends(friends);
+    updateMarkers();
+    // setForceRefresh(JSON.stringify(friends) + JSON.stringify(vehicles));
   }, [props.vehicles.current, props.friends.current]);
+
+  const updateMarkers = () => {
+    setMarkers(<></>);
+
+    if(!props.friends.current) {
+      return;
+    }
+
+    const newMarkers = props.friends.current.map((friend, index) => {
+      const friendVehicles = friend.vehicles;
+      return friendVehicles.map((friendVehicle, index) => {
+        let vehicleMake = '';
+
+        if (friendVehicle) {
+          switch (friendVehicle.make) {
+            case 'F':
+              vehicleMake = 'Ford';
+              break;
+            case 'L':
+              vehicleMake = 'Lincoln';
+              break;
+          }
+        }
+
+        const friendName = `${friend.firstName} ${friend.lastName}`;
+        const carName = `${friendVehicle.modelYear} ${vehicleMake} ${friendVehicle.modelName}`;
+
+        friendVehicle.fullCarName = carName;
+
+        return (
+          <Marker
+            key={JSON.stringify(friend)}
+            coordinate={{
+              latitude: parseFloat(friendVehicle.vehicleLocationLatitude),
+              longitude: parseFloat(friendVehicle.vehicleLocationLongitude)
+            }}
+            onCalloutPress={() => {
+              setFriendSelected(friend);
+              setFriendVehicleSelected(friendVehicle);
+              setModalVisible(true);
+            }}
+            title='click here for more info'
+          >
+            <View style={[styles.container, { padding: 10, borderRadius: 5, borderWidth: 0.5, borderColor: colors.borderColor }]}>
+              <Text style={[styles.text, { fontSize: 18, fontWeight: 'bold' }]}>{friendName}</Text>
+              <Text style={[styles.text, { fontSize: 12 }]}>{carName}</Text>
+            </View>
+          </Marker>
+        );
+      })
+    });
+
+    setMarkers(newMarkers);
+  }
 
   return (
     <>
@@ -56,17 +112,20 @@ const MapViewScreen = (props: any) => {
         >
           <TouchableWithoutFeedback onPress={() => { setModalVisible(false) }}>
             <View style={[styles.centeredView]}>
-              <View style={[styles.modalView, { width: '80%' }]}>
+              <View style={[styles.modalView, { width: '80%', padding: 20 }]}>
                 {
                   (friendSelected)
                     ?
                     <>
-                      <Text style={styles.text}>{friendSelected.firstName}'s {friendVehicleSelected.fullCarName}</Text>
+                      <Text style={[styles.text, { fontWeight: 'bold', fontSize: 18, marginBottom: 10 }]}>{friendSelected.firstName}'s {friendVehicleSelected.fullCarName}</Text>
                       {
                         friendVehicleSelected &&
-                        <View style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
-                          <Text style={styles.text}>TODO: show mileage and other car stuff</Text>
-                          <Text style={styles.text}>Last active on {new Date(friendVehicleSelected.updatedAt).toTimeString()}</Text>
+                        <View style={[{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }]}>
+                          <Text style={[styles.text, { marginBottom: 10 }]}>Speed: {friendVehicleSelected.vehicleLocationSpeed} mph {friendVehicleSelected.vehicleLocationDirection}</Text>
+                          <Text style={[styles.text, { marginBottom: 10 }]}>Mileage: {friendVehicleSelected.mileage} miles</Text>
+                          <Text style={[styles.text, { marginBottom: 10 }]}>Odometer: {friendVehicleSelected.odometer} miles</Text>
+                          <Text style={[styles.text, { marginBottom: 10 }]}>Ignition Status: {friendVehicleSelected.ignitionStatusValue}</Text>
+                          <Text style={[styles.text, { marginBottom: 0 }]}>Last active: {new Date(friendVehicleSelected.updatedAt).toString()}</Text>
                         </View>
                       }
                     </>
@@ -85,59 +144,9 @@ const MapViewScreen = (props: any) => {
             style={{ flex: 1 }}
             region={region}
             showsUserLocation={true}
+            key={forceRefresh}
           >
-            {friends.map((friend, index) => {
-              const friendVehicles = friend.vehicles;
-              return friendVehicles.map((friendVehicle, index) => {
-                let vehicleMake = '';
-
-                if (friendVehicle) {
-                  switch (friendVehicle.make) {
-                    case 'F':
-                      vehicleMake = 'Ford';
-                      break;
-                    case 'L':
-                      vehicleMake = 'Lincoln';
-                      break;
-                  }
-                }
-
-                const friendName = `${friend.firstName} ${friend.lastName}`;
-                const carName = `${vehicle.modelYear} ${vehicleMake} ${vehicle.modelName}`;
-
-                friendVehicle.fullCarName = carName;
-
-                return (
-                  <Marker
-                    key={index}
-                    coordinate={{
-                      latitude: parseFloat(friendVehicle.vehicleLocationLatitude),
-                      longitude: parseFloat(friendVehicle.vehicleLocationLongitude)
-                    }}
-                    onCalloutPress={() => {
-                      setFriendSelected(friend);
-                      setFriendVehicleSelected(friendVehicle);
-                      setModalVisible(true);
-                    }}
-                    title='click here for more info'
-                  >
-                    <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5 }}>
-                      <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}>{friendName}</Text>
-                      <Text style={{ color: 'black', fontSize: 12 }}>{carName}</Text>
-                    </View>
-                  </Marker>
-                );
-              })
-            })}
-            {/* <Marker
-              key={0}
-              coordinate={{
-                latitude: 37.298984,
-                longitude: -122.050362
-              }}
-              title={'title'}
-              description={'desc'}
-            /> */}
+            {markers}
           </MapView>
         </View>
         :

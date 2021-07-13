@@ -162,7 +162,7 @@ const LoginView = (props: any) => {
               ?
               <ActivityIndicator size='small' color='white' />
               :
-              <Text style={{ color: 'white', fontSize: 18 }}>Login</Text>
+              <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Login</Text>
             }
           </Pressable>
         </View>

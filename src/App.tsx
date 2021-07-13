@@ -18,7 +18,6 @@ import { useTheme } from './app/styles/ThemeContext';
 import { ThemeProvider } from './app/styles/ThemeContext';
 import { Provider } from 'react-redux';
 import { store } from './app/redux/store/Store';
-import { StatusBar } from 'react-native';
 
 const Stack = createStackNavigator();
 const AppContext = React.createContext(undefined);

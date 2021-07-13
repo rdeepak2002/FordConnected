@@ -48,7 +48,7 @@ const SettingsView = (props: any) => {
               signOut();
             }}
           >
-            <Text style={{ color: 'white', fontSize: 18 }}>Log Out</Text>
+            <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Log Out</Text>
           </Pressable>
         </View>
       </View>

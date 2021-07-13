@@ -143,7 +143,7 @@ const SearchView = (props: any) => {
                       ?
                       <ActivityIndicator size='small' color='white' />
                       :
-                      <Text style={{ color: 'white' }}>Send Request</Text>
+                      <Text style={{ color: 'white', fontWeight: 'bold' }}>Send Request</Text>
                   }
                 </Pressable>
               </View>

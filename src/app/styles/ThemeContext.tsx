@@ -72,6 +72,25 @@ const getStyles = (colors: any) => {
       shadowRadius: 4,
       elevation: 5
     },
+    postBtnContainer: {
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.23,
+      shadowRadius: 2.62,
+      elevation: 4,
+      width: 80, 
+      height: 80,
+      backgroundColor: colors.createPostBtn,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 40,
+      position: 'absolute',
+      bottom: 20,
+      right: 20
+    },
   });
   return styles;
 }

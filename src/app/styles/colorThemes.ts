@@ -13,7 +13,9 @@ export const lightColors = {
   sendRequestBtn: '#1973e8',
   loginBtn: '#59acff',
   activityIndicator: '#1973e8',
-  borderColor: 'black'
+  borderColor: 'black',
+  createPostBtn: 'rgba(255,255,255,1.0))',
+  createPostGlyph: '#1973e8'
 };
 
 // Dark theme colors
@@ -31,5 +33,7 @@ export const darkColors = {
   sendRequestBtn: '#8059ff',
   loginBtn: '#8059ff',
   activityIndicator: 'white',
-  borderColor: 'white'
+  borderColor: 'white',
+  createPostBtn: '#303133',
+  createPostGlyph: '#89b4f7'
 };

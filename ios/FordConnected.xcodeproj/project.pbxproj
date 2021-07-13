@@ -114,7 +114,6 @@
 				958B8D4EF3C00D19DCC7BD8A /* Pods-FordConnected-FordConnectedTests.debug.xcconfig */,
 				F4E655BD95F3BF1DD68F8ABE /* Pods-FordConnected-FordConnectedTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -488,6 +487,7 @@
 				DEVELOPMENT_TEAM = F3LP37M7J6;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = FordConnected/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -514,6 +514,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F3LP37M7J6;
 				INFOPLIST_FILE = FordConnected/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

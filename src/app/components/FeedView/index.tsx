@@ -36,9 +36,9 @@ const FeedView = (props: any) => {
       {(userSession && vehicle && carImgData)
         ?
         <ScrollView style={{ display: 'flex', flexDirection: 'column' }}>
-          <Text style={[styles.text, { textAlign: 'center' }]}>{userSession.firstName}'s {vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>
           <FullWidthImage source={{ uri: carImgData }} />
-          <Text style={styles.text}>feed</Text>
+          <Text style={[styles.text, { textAlign: 'center', fontWeight: 'bold', fontSize: 25, marginTop: 20 }]}>{userSession.firstName}'s {vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>
+          {/* <Text style={styles.text}>feed</Text> */}
         </ScrollView>
         :
         <View style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

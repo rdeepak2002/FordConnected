@@ -19,7 +19,7 @@ import { getCarImageFull, getFriends, getVehicles, refreshTokens, updateUserVehi
 import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setFriends } from '../../redux/actions/FriendsActions';
-import { DEBUG_MODE, ONE_MINUTE, TEN_SECONDS, THIRTY_SECONDS } from '../../../Constants';
+import { DEBUG_MODE, FIFTEEN_SECONDS, ONE_MINUTE, TEN_SECONDS, THIRTY_SECONDS } from '../../../Constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -66,10 +66,10 @@ const HomeView = (props: any) => {
     }, TEN_SECONDS);
 
     let updateUserVehiclesTimer = setTimeout(() => {
-      updateUserVehicles(props.userSession.current, props).then(() => {
-        if (DEBUG_MODE) console.log('user vehicles updated');
+      updateUserVehiclesOnDemand(props).then(() => {
+        if (DEBUG_MODE) console.log('user vehicles updated on demand');
       });
-    }, THIRTY_SECONDS);
+    }, TEN_SECONDS);
 
     return () => {
       clearTimeout(updateVehiclesAndCarImageTimer);
@@ -223,6 +223,25 @@ export const loadFriends = async (props: any) => {
     });
   }
 };
+
+export const updateUserVehiclesOnDemand = async (props: any) => {
+  const userSession = await retrieveUserSession();
+  setUserSession(userSession);
+
+  if (userSession) {
+    await updateUserVehicles(userSession, props).then(([response, error]) => {
+      if (error) {
+        if (DEBUG_MODE) console.log('server error updating user vehicles');
+      }
+      else if (!response) {
+        if (DEBUG_MODE) console.log('app error updating user vehicles');
+      }
+    }).catch((error) => {
+      if (DEBUG_MODE) console.log('app error updating user vehicles');
+      if (DEBUG_MODE) console.error(error);
+    });
+  }
+}
 
 export const mapStateToProps = (state) => {
   const { userSession, vehicles, friends } = state

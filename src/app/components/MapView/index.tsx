@@ -34,12 +34,12 @@ const MapViewScreen = (props: any) => {
         setVehicle(userVehicle);
       }
 
-      setRegion({
-        latitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLatitude) : 0,
-        longitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLongitude) : 0,
-        latitudeDelta: userVehicle ? latitudeDelta : 100,
-        longitudeDelta: userVehicle ? longitudeDelta : 100
-      });
+      // setRegion({
+      //   latitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLatitude) : 0,
+      //   longitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLongitude) : 0,
+      //   latitudeDelta: userVehicle ? latitudeDelta : 100,
+      //   longitudeDelta: userVehicle ? longitudeDelta : 100
+      // });
     }
 
     setFriends(friends);
@@ -135,12 +135,12 @@ const MapViewScreen = (props: any) => {
           </TouchableWithoutFeedback>
         </Modal>
       </View>
-      {(region && vehicle && friends)
+      {(vehicle && friends)
         ?
         <View style={styles.container}>
           <MapView
             style={{ flex: 1 }}
-            region={region}
+            // region={region}
             showsUserLocation={true}
           >
             {markers}

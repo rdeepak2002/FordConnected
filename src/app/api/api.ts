@@ -391,4 +391,95 @@ const updateUserVehicles = async (userSession: any, props: any): Promise<[respon
   }
 }
 
-export { loginUser, refreshTokens, getCarImageFull, getVehicles, addFriend, getFriends, updateUserVehicles }
+const createPost = async (userSession: any, props: any, visibility: string, title: string, body: string, files: string[], type: string): Promise<[response: any, error: any]> => {
+  const curTimestampSeconds = Math.floor(new Date().getTime() / 1000);
+
+  if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
+    if (DEBUG_MODE) console.log('API CALL createPost', 'refreshing tokens');
+    userSession = await retrieveUserSession();
+    await refreshTokens(userSession, props);
+    userSession = await retrieveUserSession();
+    return await createPost(userSession, props, visibility, title, body, files, type);
+  }
+  else {
+    const postData = JSON.stringify({
+      query: `mutation {
+        createPost(accessToken: "${userSession.accessToken}", visibility: "${visibility}", title: "${title}", body: "${body}", files: [${files.join()}], type: "${type}"){
+          id
+          userId
+          fordProfileId
+          visibility
+          title
+          body
+          files
+          updatedAt
+          createdAt
+          type
+          user {
+            id
+            username
+            firstName
+            lastName
+            fordProfileId
+            updatedAt
+            createdAt
+            lastActive
+            vehicles {
+              id
+              userId
+              fordProfileId
+              make
+              modelName
+              modelYear
+              color
+              nickname
+              modemEnabled
+              vehicleAuthorizationIndicator
+              serviceCompatible
+              lastUpdated
+              engineType
+              fuelLevelValue
+              fuelLevelDistanceToEmpty
+              mileage
+              odometer
+              remoteStartStatus
+              chargingStatusValue
+              ignitionStatusValue
+              doorStatus
+              vehicleLocationLongitude
+              vehicleLocationLatitude
+              vehicleLocationSpeed
+              vehicleLocationDirection
+              createdAt
+              updatedAt
+            }
+          }
+        }
+      }`,
+      variables: {}
+    });
+
+
+    let response = undefined;
+    let error = undefined;
+
+    const url = `${REACT_APP_API_URL}/api/graphql`;
+
+    if (DEBUG_MODE) console.log('API CALL createPost', url);
+
+    try {
+      const data = await axios.post(url, postData);
+      if (data.data.data) {
+        response = data.data.data.createPost;
+      }
+      error = data.data.errors;
+    }
+    catch (err) {
+      error = err;
+    }
+
+    return [response, error];
+  }
+}
+
+export { loginUser, refreshTokens, getCarImageFull, getVehicles, addFriend, getFriends, updateUserVehicles, createPost }

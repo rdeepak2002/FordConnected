@@ -55,29 +55,6 @@ const HomeView = (props: any) => {
       }
     }
 
-    // let updateVehiclesAndCarImageTimer = setTimeout(() => {
-    // loadVehiclesAndCarImage(props).then(() => {
-    //   if (DEBUG_MODE) console.log('vehicles and car image updated');
-    // });
-    // }, TEN_SECONDS);
-
-    // let updateFriendsTimer = setTimeout(() => {
-    // loadFriends(props).then(() => {
-    //   if (DEBUG_MODE) console.log('friends updated');
-    // });
-    // }, TEN_SECONDS);
-
-    // let updateUserVehiclesTimer = setTimeout(() => {
-    // updateUserVehiclesOnDemand(props).then(() => {
-    //   if (DEBUG_MODE) console.log('user vehicles updated on demand');
-    // });
-    // }, TEN_SECONDS);
-
-    // return () => {
-    //   clearTimeout(updateVehiclesAndCarImageTimer);
-    //   clearTimeout(updateFriendsTimer);
-    //   clearTimeout(updateUserVehiclesTimer);
-    // };
     if (!bgTimerInit) {
       console.log('staring background timer');
 

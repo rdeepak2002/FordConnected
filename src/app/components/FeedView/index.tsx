@@ -12,6 +12,8 @@ import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setFriends } from '../../redux/actions/FriendsActions';
 import { connect } from 'react-redux';
 import { mapDispatchToProps, mapStateToProps } from '../HomeView';
+import { createPost } from '../../api/api';
+import { DEBUG_MODE } from '../../../Constants';
 
 const FeedView = (props: any) => {
   const { styles, colors, isDark } = useTheme();
@@ -23,7 +25,7 @@ const FeedView = (props: any) => {
 
   const [postModalVisible, setPostModalVisible] = useState<boolean>(false);
   const [postTitle, setPostTitle] = useState<string>('');
-  const [postBody, setPostBody] = useState<string>('TODO: make this a input box instead of field');
+  const [postBody, setPostBody] = useState<string>('');
   const [sendingPost, setSendingPost] = useState<boolean>(false);
 
   let vehicleMake = '';
@@ -49,20 +51,22 @@ const FeedView = (props: any) => {
         >
           <TouchableWithoutFeedback onPress={() => { if (!sendingPost) setPostModalVisible(false) }}>
             <View style={[styles.centeredView]}>
-              <View style={[styles.modalView, { width: '80%' }]}>
+              <View style={[styles.modalView, { width: '100%' }]}>
                 <View style={[styles.inputContainer, { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }]}>
                   <TextInput
-                    placeholder={'title of post'}
+                    placeholder={'Topic'}
                     value={postTitle}
                     onChange={event => setPostTitle(event.nativeEvent.text)}
-                    style={[styles.input, { width: '90%', marginBottom: 20 }]}
+                    style={[styles.input, { width: '100%', marginBottom: 20 }]}
                     placeholderTextColor="#474b52"
                   />
                   <TextInput
-                    placeholder={'write about anything!'}
+                    placeholder={'What\'s on your mind?'}
+                    multiline={true}
+                    numberOfLines={10}
                     value={postBody}
                     onChange={event => setPostBody(event.nativeEvent.text)}
-                    style={[styles.input, { width: '90%', marginBottom: 20 }]}
+                    style={[styles.input, { width: '100%', height: 100, marginBottom: 20 }]}
                     placeholderTextColor="#474b52"
                   />
                 </View>
@@ -71,6 +75,29 @@ const FeedView = (props: any) => {
                   onPress={() => {
                     setSendingPost(true);
                     console.log("TODO: make request to send post");
+
+                    const visibility = 'normal';
+                    const files = [];
+                    const type = 'normal';
+
+                    createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => { 
+                      if (error) {
+                        if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
+                        if (DEBUG_MODE) console.error(error);
+                      }
+                      else if (data) {
+                        if (DEBUG_MODE) console.log('post sent!');
+                      }
+                      else {
+                        if (DEBUG_MODE) console.error('CREATE POST ERROR', 'APP ERROR');
+                      }
+
+                      // reset form
+                      setSendingPost(false);
+                      setPostModalVisible(false);
+                      setPostTitle('');
+                      setPostBody('');
+                    });
                   }}
                 >
                   {
@@ -78,7 +105,7 @@ const FeedView = (props: any) => {
                       ?
                       <ActivityIndicator size='small' color='white' />
                       :
-                      <Text style={{ color: 'white', fontWeight: 'bold' }}>Send</Text>
+                      <Text style={{ color: 'white', fontWeight: 'bold' }}>Post</Text>
                   }
                 </Pressable>
               </View>

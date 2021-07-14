@@ -2,15 +2,17 @@ import React from 'react';
 import FullWidthImage from 'react-native-fullwidth-image';
 import MaterialCommunityIcons from 'react-native-vector-icons/FontAwesome5';
 import Modal from 'react-native-modal';
+import FadeInOut from 'react-native-fade-in-out';
+import storage from '@react-native-firebase/storage';
+import * as ImagePicker from 'react-native-image-picker';
 
 import { useState, useEffect } from 'react';
-import { ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl } from 'react-native';
+import { ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl, Button } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
 import { connect } from 'react-redux';
 import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import { createPost } from '../../api/api';
 import { DEBUG_MODE } from '../../../Constants';
-import FadeInOut from 'react-native-fade-in-out';
 
 const FeedView = (props: any) => {
   const { styles, colors, isDark } = useTheme();
@@ -29,6 +31,7 @@ const FeedView = (props: any) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [scrollPos, setScrollPos] = useState<number>(0);
   const [dScroll, setDScroll] = useState<number>(0);
+  const [photo, setPhoto] = useState<any>(null);
 
   let vehicleMake = '';
 
@@ -72,7 +75,7 @@ const FeedView = (props: any) => {
     if (props.posts.current) {
       const listPosts = posts.map((post, index) => {
         return (
-          <View key={index} style={[styles.postContainer, {borderRadius: 10, backgroundColor: colors.postInnerContainerColor}]}>
+          <View key={index} style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
             {(post.files && post.files.length > 0) &&
               <FullWidthImage source={{ uri: post.files[0] }} />
             }
@@ -86,6 +89,59 @@ const FeedView = (props: any) => {
 
       setPostsRender(listPosts);
     }
+  }
+
+  const handleChoosePhoto = () => {
+    const options: any = {
+      noData: true,
+    }
+    ImagePicker.launchImageLibrary(options, response => {
+      const imagePickerResponse: any = response;
+      if (imagePickerResponse) {
+        setPhoto(imagePickerResponse.uri);
+
+        // TODO: move this to when the submit button is clicked and show preview of image being uploaded
+        // TODO: add guid to filename / storage ref to prevent conflict
+        const reference = storage().ref(imagePickerResponse.fileName);
+        reference.putFile(imagePickerResponse.uri).then(()=>{
+          if(DEBUG_MODE) console.log('image uploaded');
+        }).catch((error)=>{
+          if(DEBUG_MODE) console.log('error uploading to firebase');
+          console.error(error);
+        });
+
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+        // TODO: firebase upload photo using uri above
+
+
+
+
+
+
+      }
+      else {
+        console.error('error opening image picker');
+      }
+    })
   }
 
   return (
@@ -116,6 +172,7 @@ const FeedView = (props: any) => {
                     style={[styles.input, { width: '100%', height: 100, marginBottom: 20 }]}
                     placeholderTextColor="#474b52"
                   />
+                  <Button title="Choose Photo" onPress={handleChoosePhoto} />
                 </View>
                 <Pressable
                   style={[styles.button, styles.sendRequestBtn]}

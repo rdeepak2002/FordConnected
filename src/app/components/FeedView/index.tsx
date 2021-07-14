@@ -192,7 +192,7 @@ const FeedView = (props: any) => {
       }
 
       {(userSession && vehicle && carImgData) &&
-        <FadeInOut visible={!postModalVisible && dScroll >= -1}>
+        <FadeInOut visible={!postModalVisible && (dScroll >= -1 || scrollPos === 0)}>
           <Pressable onPress={() => { setPostModalVisible(true) }} style={[styles.postBtnContainer]}>
             <MaterialCommunityIcons style={{ elevation: 3 }} name='pen' color={colors.createPostGlyph} size={25} />
           </Pressable>

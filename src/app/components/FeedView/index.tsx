@@ -119,7 +119,7 @@ const FeedView = (props: any) => {
                   onPress={() => {
                     setSendingPost(true);
 
-                    const visibility = 'normal';
+                    const visibility = 'friends';
                     const files = [];
                     const type = 'normal';
 

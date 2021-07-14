@@ -4,6 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/FontAwesome5';
 import Modal from 'react-native-modal';
 import FadeInOut from 'react-native-fade-in-out';
 import storage from '@react-native-firebase/storage';
+import uuid from 'react-native-uuid';
 import * as ImagePicker from 'react-native-image-picker';
 
 import { useState, useEffect } from 'react';
@@ -79,7 +80,7 @@ const FeedView = (props: any) => {
         return (
           <View key={index} style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
             {(post.files && post.files.length > 0) &&
-              <FullWidthImage source={{ uri: post.files[0] }} />
+              <FullWidthImage source={{ uri: post.files[0] }} style={{borderTopLeftRadius: 10, borderTopRightRadius: 10}}/>
             }
             <View style={{ padding: 10 }}>
               <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
@@ -148,7 +149,7 @@ const FeedView = (props: any) => {
                     placeholderTextColor="#474b52"
                   />
                 </View>
-                <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
+                <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
                   {(photo && photo.uri) &&
                     <Image
                       source={{
@@ -168,41 +169,51 @@ const FeedView = (props: any) => {
                     const files = [];
                     const type = 'normal';
 
-                    // TODO: move this to when the submit button is clicked and show preview of image being uploaded
-                    // TODO: add guid to filename / storage ref to prevent conflict
-
-                    const reference = storage().ref(photo.fileName);
-                    reference.putFile(photo.uri).then(() => {
-                      if (DEBUG_MODE) console.log('post image uploaded');
-                    }).catch((error) => {
-                      if (DEBUG_MODE) console.log('error uploading post image to firebase');
-                      console.error(error);
-                    });
-
-                    createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => {
-                      if (error) {
-                        if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
-                        if (DEBUG_MODE) console.error(error);
-                        setSendingPost(false);
+                    const submit = async (reference) => {
+                      if(reference) {
+                        const downloadUrl = await reference.getDownloadURL();
+                        console.log('download url', downloadUrl);
+                        files.push(`"${downloadUrl}"`);
                       }
-                      else if (data) {
-                        if (DEBUG_MODE) console.log('post sent!');
-
-                        // get the post
-                        loadPosts(props).then(() => {
-                          // reset form
+                      createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => {
+                        if (error) {
+                          if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
+                          if (DEBUG_MODE) console.error(error);
                           setSendingPost(false);
-                          setPostModalVisible(false);
-                          setPostTitle('');
-                          setPostBody('');
-                          setPhoto(null);
-                        });
-                      }
-                      else {
-                        if (DEBUG_MODE) console.error('CREATE POST ERROR', 'APP ERROR');
-                        setSendingPost(false);
-                      }
-                    });
+                        }
+                        else if (data) {
+                          if (DEBUG_MODE) console.log('post sent!');
+
+                          // get the post
+                          loadPosts(props).then(() => {
+                            // reset form
+                            setSendingPost(false);
+                            setPostModalVisible(false);
+                            setPostTitle('');
+                            setPostBody('');
+                            setPhoto(null);
+                          });
+                        }
+                        else {
+                          if (DEBUG_MODE) console.error('CREATE POST ERROR', 'APP ERROR');
+                          setSendingPost(false);
+                        }
+                      });
+                    }
+
+                    if (photo && photo.uri) {
+                      const reference = storage().ref(photo.fileName + uuid.v4().toString());
+                      reference.putFile(photo.uri).then((res) => {
+                        if (DEBUG_MODE) console.log('post image uploaded');
+                        submit(reference);
+                      }).catch((error) => {
+                        if (DEBUG_MODE) console.log('error uploading post image to firebase');
+                        console.error(error);
+                      });
+                    }
+                    else {
+                      submit(undefined);
+                    }
                   }}
                 >
                   {

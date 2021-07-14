@@ -15,7 +15,9 @@ export const lightColors = {
   activityIndicator: '#1973e8',
   borderColor: 'black',
   createPostBtn: 'rgba(255,255,255,1.0))',
-  createPostGlyph: '#1973e8'
+  createPostGlyph: '#1973e8',
+  postBorderColor: 'rgba(255,255,255,0)',
+  postInnerContainerColor: '#ffffff'
 };
 
 // Dark theme colors
@@ -35,5 +37,7 @@ export const darkColors = {
   activityIndicator: 'white',
   borderColor: 'white',
   createPostBtn: '#303133',
-  createPostGlyph: '#89b4f7'
+  createPostGlyph: '#89b4f7',
+  postBorderColor: 'grey',
+  postInnerContainerColor: '#303133'
 };

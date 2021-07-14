@@ -6,10 +6,6 @@ import Modal from 'react-native-modal';
 import { useState, useEffect } from 'react';
 import { ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
-import { bindActionCreators } from 'redux';
-import { setUserSession } from '../../redux/actions/UserSessionActions';
-import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
-import { setFriends } from '../../redux/actions/FriendsActions';
 import { connect } from 'react-redux';
 import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import { createPost } from '../../api/api';
@@ -30,6 +26,8 @@ const FeedView = (props: any) => {
   const [sendingPost, setSendingPost] = useState<boolean>(false);
   const [postsRender, setPostsRender] = useState<any>(undefined);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [scrollPos, setScrollPos] = useState<number>(0);
+  const [dScroll, setDScroll] = useState<number>(0);
 
   let vehicleMake = '';
 
@@ -46,28 +44,7 @@ const FeedView = (props: any) => {
 
   useEffect(() => {
     updatePosts();
-  }, [props.posts.current]);
-
-  const updatePosts = () => {
-    setPostsRender(<></>);
-
-    if (!props.posts.current) {
-      return;
-    }
-
-    if (posts) {
-      const listPosts = posts.map((post, index) => {
-        return (
-          <View key={index}>
-            <Text style={[styles.text]}>{post.title}</Text>
-            <Text style={[styles.text]}>{post.body}</Text>
-          </View>
-        );
-      });
-
-      setPostsRender(listPosts);
-    }
-  }
+  }, [props.posts.current, isDark]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -76,6 +53,37 @@ const FeedView = (props: any) => {
       setRefreshing(false);
     });
   }, []);
+
+  const handleScroll = (event: any) => {
+    const yOffset = event.nativeEvent.contentOffset.y;
+
+    setDScroll(scrollPos - yOffset);
+    setScrollPos(yOffset);
+  }
+
+  const updatePosts = () => {
+    setPostsRender(<></>);
+
+    if (!props.posts.current) {
+      return;
+    }
+
+    if (props.posts.current) {
+      const listPosts = posts.map((post, index) => {
+        return (
+          <View key={index} style={[styles.postContainer]}>
+            <FullWidthImage source={{ uri: 'https://www.telegraph.co.uk/content/dam/Travel/2018/September/El-Yunque-morning-mist-iStock-535499464.jpg?imwidth=450' }} style={{ borderTopRightRadius: 10, borderTopLeftRadius: 10 }} />
+            <View style={{ padding: 10, backgroundColor: colors.postInnerContainerColor, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+              <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
+              <Text style={[styles.text, { fontSize: 15 }]}>{post.body}</Text>
+            </View>
+          </View>
+        );
+      });
+
+      setPostsRender(listPosts);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -110,7 +118,6 @@ const FeedView = (props: any) => {
                   style={[styles.button, styles.sendRequestBtn]}
                   onPress={() => {
                     setSendingPost(true);
-                    console.log("TODO: make request to send post");
 
                     const visibility = 'normal';
                     const files = [];
@@ -159,9 +166,10 @@ const FeedView = (props: any) => {
             />
           }
           style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
+          onScroll={handleScroll}
         >
           <FullWidthImage source={{ uri: carImgData }} />
-          <Text style={[styles.text, { textAlign: 'center', fontWeight: 'bold', fontSize: 25, marginTop: 20 }]}>{userSession.firstName}'s {vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>
+          <Text style={[styles.text, { textAlign: 'center', fontWeight: 'bold', fontSize: 25, marginTop: 20, marginBottom: 15 }]}>{userSession.firstName}'s {vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>
 
           {(posts.length > 0) &&
             <>
@@ -175,7 +183,7 @@ const FeedView = (props: any) => {
         </View>
       }
 
-      {(userSession && vehicle && carImgData && !postModalVisible) &&
+      {(userSession && vehicle && carImgData && !postModalVisible && dScroll >= 0) &&
         <Pressable onPress={() => { setPostModalVisible(true) }} style={[styles.postBtnContainer]}>
           <MaterialCommunityIcons style={{ elevation: 3 }} name='pen' color={colors.createPostGlyph} size={25} />
         </Pressable>

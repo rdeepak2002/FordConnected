@@ -91,6 +91,23 @@ const getStyles = (colors: any) => {
       bottom: 20,
       right: 20
     },
+    postContainer: {
+      marginTop: 10,
+      marginBottom: 10,
+      marginLeft: 10,
+      marginRight: 10,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: colors.postBorderColor,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.23,
+      shadowRadius: 2.62,
+      elevation: 4,
+    }
   });
   return styles;
 }

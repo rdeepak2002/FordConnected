@@ -4,3 +4,10 @@ export const setFriends = friends => (
     payload: friends,
   }
 );
+
+export const setFriendsRequested = friendsReq => (
+  {
+    type: 'SET_FRIENDS_REQUESTED',
+    payload: friendsReq,
+  }
+);

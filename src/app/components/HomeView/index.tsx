@@ -20,7 +20,7 @@ import { getCarImageFull, getFriends, getPosts, getVehicles, refreshTokens, upda
 import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setPosts } from '../../redux/actions/PostsActions';
-import { setFriends } from '../../redux/actions/FriendsActions';
+import { setFriends, setFriendsRequested } from '../../redux/actions/FriendsActions';
 import { DEBUG_MODE, FIFTEEN_SECONDS, ONE_MINUTE, TEN_SECONDS, THIRTY_SECONDS } from '../../../Constants';
 
 const Tab = createBottomTabNavigator();
@@ -241,7 +241,9 @@ export const loadFriends = async (props: any) => {
       }
       else if (data) {
         const friendsListNotParsed: any = data;
+
         let friendsList: Array<any> = [];
+        let friendsListRequested: Array<any> = [];
 
         for (let i = 0; i < friendsListNotParsed.length; i++) {
           if(friendsListNotParsed[i].status === 'ACCEPTED') {
@@ -250,9 +252,13 @@ export const loadFriends = async (props: any) => {
             const friend = (person1.id === userSession.id) ? person2 : person1;
             friendsList.push(friend);
           }
+          else {
+            friendsListRequested.push(friendsListNotParsed[i]);
+          }
         }
 
         props.setFriends(friendsList);
+        props.setFriendsRequested(friendsListRequested);
       }
       else {
         console.error('GET FRIENDS ERROR', 'APP ERROR');
@@ -290,6 +296,7 @@ export const mapDispatchToProps = dispatch => (
     setUserSession,
     setVehicles,
     setFriends,
+    setFriendsRequested,
     setCarImage,
     setPosts
   }, dispatch)

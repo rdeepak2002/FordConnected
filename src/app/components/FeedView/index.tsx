@@ -72,11 +72,11 @@ const FeedView = (props: any) => {
     if (props.posts.current) {
       const listPosts = posts.map((post, index) => {
         return (
-          <View key={index} style={[styles.postContainer]}>
+          <View key={index} style={[styles.postContainer, {borderRadius: 10, backgroundColor: colors.postInnerContainerColor}]}>
             {(post.files && post.files.length > 0) &&
-              <FullWidthImage source={{ uri: post.files[0] }} style={{ borderTopRightRadius: 10, borderTopLeftRadius: 10 }} />
+              <FullWidthImage source={{ uri: post.files[0] }} />
             }
-            <View style={{ padding: 10, backgroundColor: colors.postInnerContainerColor, borderRadius: 10 }}>
+            <View style={{ padding: 10 }}>
               <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
               <Text style={[styles.text, { fontSize: 15 }]}>{post.body}</Text>
             </View>

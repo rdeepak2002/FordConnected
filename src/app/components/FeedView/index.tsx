@@ -73,7 +73,9 @@ const FeedView = (props: any) => {
       const listPosts = posts.map((post, index) => {
         return (
           <View key={index} style={[styles.postContainer]}>
-            <FullWidthImage source={{ uri: 'https://www.telegraph.co.uk/content/dam/Travel/2018/September/El-Yunque-morning-mist-iStock-535499464.jpg?imwidth=450' }} style={{ borderTopRightRadius: 10, borderTopLeftRadius: 10 }} />
+            {(post.files && post.files.length > 0) && 
+              <FullWidthImage source={{ uri: post.files[0] }} style={{ borderTopRightRadius: 10, borderTopLeftRadius: 10 }} />
+            }
             <View style={{ padding: 10, backgroundColor: colors.postInnerContainerColor, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
               <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
               <Text style={[styles.text, { fontSize: 15 }]}>{post.body}</Text>

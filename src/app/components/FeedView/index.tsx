@@ -73,7 +73,7 @@ const FeedView = (props: any) => {
       const listPosts = posts.map((post, index) => {
         return (
           <View key={index} style={[styles.postContainer]}>
-            {(post.files && post.files.length > 0) && 
+            {(post.files && post.files.length > 0) &&
               <FullWidthImage source={{ uri: post.files[0] }} style={{ borderTopRightRadius: 10, borderTopLeftRadius: 10 }} />
             }
             <View style={{ padding: 10, backgroundColor: colors.postInnerContainerColor, borderRadius: 10 }}>
@@ -133,16 +133,19 @@ const FeedView = (props: any) => {
                       }
                       else if (data) {
                         if (DEBUG_MODE) console.log('post sent!');
+
+                        // get the post
+                        loadPosts(props).then(() => {
+                          // reset form
+                          setSendingPost(false);
+                          setPostModalVisible(false);
+                          setPostTitle('');
+                          setPostBody('');
+                        });
                       }
                       else {
                         if (DEBUG_MODE) console.error('CREATE POST ERROR', 'APP ERROR');
                       }
-
-                      // reset form
-                      setSendingPost(false);
-                      setPostModalVisible(false);
-                      setPostTitle('');
-                      setPostBody('');
                     });
                   }}
                 >
@@ -186,8 +189,8 @@ const FeedView = (props: any) => {
         </View>
       }
 
-      {(userSession && vehicle && carImgData && !postModalVisible) &&
-        <FadeInOut visible={dScroll >= -1}>
+      {(userSession && vehicle && carImgData) &&
+        <FadeInOut visible={!postModalVisible && dScroll >= -1}>
           <Pressable onPress={() => { setPostModalVisible(true) }} style={[styles.postBtnContainer]}>
             <MaterialCommunityIcons style={{ elevation: 3 }} name='pen' color={colors.createPostGlyph} size={25} />
           </Pressable>

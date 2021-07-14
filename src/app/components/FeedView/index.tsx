@@ -130,6 +130,7 @@ const FeedView = (props: any) => {
                       if (error) {
                         if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
                         if (DEBUG_MODE) console.error(error);
+                        setSendingPost(false);
                       }
                       else if (data) {
                         if (DEBUG_MODE) console.log('post sent!');
@@ -145,6 +146,7 @@ const FeedView = (props: any) => {
                       }
                       else {
                         if (DEBUG_MODE) console.error('CREATE POST ERROR', 'APP ERROR');
+                        setSendingPost(false);
                       }
                     });
                   }}

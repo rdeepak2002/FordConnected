@@ -9,10 +9,11 @@ import { connect } from 'react-redux';
 import { addFriend } from '../../api/api';
 import { useTheme } from '../../styles/ThemeContext';
 import { loadFriends, mapDispatchToProps, mapStateToProps } from '../HomeView';
+import FadeInOut from 'react-native-fade-in-out';
 
 const SearchView = (props: any) => {
   const { styles, isDark, colors } = useTheme()
-  
+
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [friendUsername, setFriendUsername] = useState<string>('');
@@ -168,11 +169,12 @@ const SearchView = (props: any) => {
               :
               <Text style={[styles.text, { fontSize: 24, marginTop: 5, marginBottom: 5, marginLeft: 15, fontWeight: 'bold' }]}>No Friends</Text>
             }
-            {!modalVisible &&
-              < Pressable onPress={() => { setModalVisible(true) }} style={{ marginLeft: 'auto', marginRight: 15 }}>
+
+            <FadeInOut visible={!modalVisible} style={{ marginLeft: 'auto', marginRight: 15 }}>
+              <Pressable onPress={() => { setModalVisible(true) }}>
                 <MaterialCommunityIcons name='add-circle-outline' color={isDark ? 'white' : 'black'} size={40} />
               </Pressable>
-            }
+            </FadeInOut>
           </View>
           {renderFriendsList()}
         </ScrollView>

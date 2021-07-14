@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import { createPost } from '../../api/api';
 import { DEBUG_MODE } from '../../../Constants';
+import FadeInOut from 'react-native-fade-in-out';
 
 const FeedView = (props: any) => {
   const { styles, colors, isDark } = useTheme();
@@ -183,10 +184,12 @@ const FeedView = (props: any) => {
         </View>
       }
 
-      {(userSession && vehicle && carImgData && !postModalVisible && dScroll >= 0) &&
-        <Pressable onPress={() => { setPostModalVisible(true) }} style={[styles.postBtnContainer]}>
-          <MaterialCommunityIcons style={{ elevation: 3 }} name='pen' color={colors.createPostGlyph} size={25} />
-        </Pressable>
+      {(userSession && vehicle && carImgData && !postModalVisible) &&
+        <FadeInOut visible={dScroll >= -1}>
+          <Pressable onPress={() => { setPostModalVisible(true) }} style={[styles.postBtnContainer]}>
+            <MaterialCommunityIcons style={{ elevation: 3 }} name='pen' color={colors.createPostGlyph} size={25} />
+          </Pressable>
+        </FadeInOut>
       }
     </SafeAreaView >
   );

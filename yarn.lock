@@ -5581,6 +5581,11 @@ react-native-exit-app@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-exit-app/-/react-native-exit-app-1.1.0.tgz#5ec082152974240e2d6a93f1608efb49a4385f21"
   integrity sha512-Spne19zfMfJvnUTX909EHUqWMk69rATtLJq9XMBGpNSHhx0M7v5yetx2Z87egBhLOqQm+CWfD/oxWzDG8rbIQA==
 
+react-native-fade-in-out@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-fade-in-out/-/react-native-fade-in-out-1.0.6.tgz#b8a1eb4a1e235e3534b2323f03504ae78a1822ab"
+  integrity sha512-rZxUEmiu+otPreKdxlv3piJvGe8WZt5zMyvZw0YXVV2LZdvaj6yqZOySDdBWt8zsGb4tIUR6vOC035f8SOJirw==
+
 react-native-fullwidth-image@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/react-native-fullwidth-image/-/react-native-fullwidth-image-0.1.3.tgz#ad4d712e7e504660628d01649437d4eab49731ea"

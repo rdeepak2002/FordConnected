@@ -16,9 +16,10 @@ import { connect } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { AuthContext } from '../../../App';
 import { retrieveUserSession } from '../../utilities/userSession';
-import { getCarImageFull, getFriends, getVehicles, refreshTokens, updateUserVehicles } from '../../api/api';
+import { getCarImageFull, getFriends, getPosts, getVehicles, refreshTokens, updateUserVehicles } from '../../api/api';
 import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
+import { setPosts } from '../../redux/actions/PostsActions';
 import { setFriends } from '../../redux/actions/FriendsActions';
 import { DEBUG_MODE, FIFTEEN_SECONDS, ONE_MINUTE, TEN_SECONDS, THIRTY_SECONDS } from '../../../Constants';
 
@@ -53,6 +54,12 @@ const HomeView = (props: any) => {
           if (DEBUG_MODE) console.log('friends loaded');
         });
       }
+
+      if (!props.posts.current) {
+        loadPosts(props).then(() => {
+          if (DEBUG_MODE) console.log('posts loaded');
+        });
+      }
     }
 
     if (!bgTimerInit) {
@@ -71,6 +78,10 @@ const HomeView = (props: any) => {
 
         updateUserVehiclesOnDemand(props).then(() => {
           if (DEBUG_MODE) console.log('user vehicles updated on demand');
+        });
+
+        loadPosts(props).then(() => {
+          if (DEBUG_MODE) console.log('posts updated');
         });
       }, TEN_SECONDS);
     }
@@ -169,6 +180,27 @@ export const tokenRetrieve = async (props, signOut) => {
   }
 };
 
+export const loadPosts = async (props: any) => {
+  const userSession = await retrieveUserSession();
+  setUserSession(userSession);
+
+  if (userSession) {
+    // get posts
+    await getPosts(userSession, props).then(([data, error]) => {
+      if (error) {
+        console.error('GET POSTS ERROR', 'SERVER ERROR');
+        console.error(error);
+      }
+      else if (data) {
+        props.setPosts(data);
+      }
+      else {
+        console.error('GET POSTS ERROR', 'APP ERROR');
+      }
+    });
+  }
+}
+
 export const loadVehiclesAndCarImage = async (props: any) => {
   const userSession = await retrieveUserSession();
   setUserSession(userSession);
@@ -247,8 +279,8 @@ export const updateUserVehiclesOnDemand = async (props: any) => {
 }
 
 export const mapStateToProps = (state) => {
-  const { userSession, vehicles, friends } = state
-  return { userSession, vehicles, friends }
+  const { userSession, vehicles, friends, posts } = state
+  return { userSession, vehicles, friends, posts }
 };
 
 export const mapDispatchToProps = dispatch => (
@@ -256,7 +288,8 @@ export const mapDispatchToProps = dispatch => (
     setUserSession,
     setVehicles,
     setFriends,
-    setCarImage
+    setCarImage,
+    setPosts
   }, dispatch)
 );
 

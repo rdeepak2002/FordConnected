@@ -206,7 +206,7 @@ const addFriend = async (usernameOfFriend: string, userSession: any, props: any)
     userSession = await retrieveUserSession();
     await refreshTokens(userSession, props);
     userSession = await retrieveUserSession();
-    return await getVehicles(userSession, props);
+    return await addFriend(usernameOfFriend, userSession, props);
   }
   else {
     const postData = JSON.stringify({
@@ -246,7 +246,7 @@ const getFriends = async (userSession: any, props: any): Promise<[response: any,
     userSession = await retrieveUserSession();
     await refreshTokens(userSession, props);
     userSession = await retrieveUserSession();
-    return await getVehicles(userSession, props);
+    return await getFriends(userSession, props);
   }
   else {
     const postData = JSON.stringify({
@@ -482,4 +482,94 @@ const createPost = async (userSession: any, props: any, visibility: string, titl
   }
 }
 
-export { loginUser, refreshTokens, getCarImageFull, getVehicles, addFriend, getFriends, updateUserVehicles, createPost }
+const getPosts = async (userSession: any, props: any): Promise<[response: any, error: any]> => {
+  const curTimestampSeconds = Math.floor(new Date().getTime() / 1000);
+
+  if (!userSession || curTimestampSeconds >= userSession.accessExpiresAtSeconds) {
+    if (DEBUG_MODE) console.log('API CALL getPosts', 'refreshing tokens');
+    userSession = await retrieveUserSession();
+    await refreshTokens(userSession, props);
+    userSession = await retrieveUserSession();
+    return await getPosts(userSession, props);
+  }
+  else {
+    const postData = JSON.stringify({
+      query: `query {
+        getPosts(accessToken: "${userSession.accessToken}"){
+          id
+          userId
+          fordProfileId
+          visibility
+          title
+          body
+          files
+          updatedAt
+          createdAt
+          type
+          user {
+            id
+            username
+            firstName
+            lastName
+            fordProfileId
+            updatedAt
+            createdAt
+            lastActive
+            vehicles {
+              id
+              userId
+              fordProfileId
+              make
+              modelName
+              modelYear
+              color
+              nickname
+              modemEnabled
+              vehicleAuthorizationIndicator
+              serviceCompatible
+              lastUpdated
+              engineType
+              fuelLevelValue
+              fuelLevelDistanceToEmpty
+              mileage
+              odometer
+              remoteStartStatus
+              chargingStatusValue
+              ignitionStatusValue
+              doorStatus
+              vehicleLocationLongitude
+              vehicleLocationLatitude
+              vehicleLocationSpeed
+              vehicleLocationDirection
+              createdAt
+              updatedAt
+            }
+          }
+        }
+      }`,
+      variables: {}
+    });
+
+    let response = undefined;
+    let error = undefined;
+
+    const url = `${REACT_APP_API_URL}/api/graphql`;
+
+    if (DEBUG_MODE) console.log('API CALL getPosts', url);
+
+    try {
+      const data = await axios.post(url, postData);
+      if (data.data.data) {
+        response = data.data.data.getPosts;
+      }
+      error = data.data.errors;
+    }
+    catch (err) {
+      error = err;
+    }
+
+    return [response, error];
+  }
+}
+
+export { loginUser, refreshTokens, getCarImageFull, getVehicles, addFriend, getFriends, updateUserVehicles, createPost, getPosts }

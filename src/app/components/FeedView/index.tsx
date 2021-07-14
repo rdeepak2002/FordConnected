@@ -1,6 +1,6 @@
 import React from 'react';
 import FullWidthImage from 'react-native-fullwidth-image';
-import MaterialCommunityIcons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/FontAwesome5';
 import Modal from 'react-native-modal';
 
 import { useState } from 'react';
@@ -127,7 +127,7 @@ const FeedView = (props: any) => {
 
       {(userSession && vehicle && carImgData && !postModalVisible) &&
         <Pressable onPress={() => { setPostModalVisible(true) }} style={[styles.postBtnContainer]}>
-          <MaterialCommunityIcons style={{ elevation: 3 }} name='create' color={colors.createPostGlyph} size={40} />
+          <MaterialCommunityIcons style={{ elevation: 3 }} name='pen' color={colors.createPostGlyph} size={25} />
         </Pressable>
       }
     </SafeAreaView >

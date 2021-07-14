@@ -33,13 +33,6 @@ const MapViewScreen = (props: any) => {
         userVehicle = vehicles[0];
         setVehicle(userVehicle);
       }
-
-      // setRegion({
-      //   latitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLatitude) : 0,
-      //   longitude: userVehicle ? parseFloat(userVehicle.vehicleLocationLongitude) : 0,
-      //   latitudeDelta: userVehicle ? latitudeDelta : 100,
-      //   longitudeDelta: userVehicle ? longitudeDelta : 100
-      // });
     }
 
     setFriends(friends);

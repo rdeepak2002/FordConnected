@@ -3,21 +3,22 @@ import FullWidthImage from 'react-native-fullwidth-image';
 import MaterialCommunityIcons from 'react-native-vector-icons/FontAwesome5';
 import Modal from 'react-native-modal';
 
-import { useState } from 'react';
-import { ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable } from 'react-native';
+import { useState, useEffect } from 'react';
+import { ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
 import { bindActionCreators } from 'redux';
 import { setUserSession } from '../../redux/actions/UserSessionActions';
 import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setFriends } from '../../redux/actions/FriendsActions';
 import { connect } from 'react-redux';
-import { mapDispatchToProps, mapStateToProps } from '../HomeView';
+import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import { createPost } from '../../api/api';
 import { DEBUG_MODE } from '../../../Constants';
 
 const FeedView = (props: any) => {
   const { styles, colors, isDark } = useTheme();
 
+  const posts = props.posts.current;
   const userSession = props.userSession.current;
   const vehicles = props.vehicles.current;
   const carImgData = props.vehicles.carImage;
@@ -27,6 +28,8 @@ const FeedView = (props: any) => {
   const [postTitle, setPostTitle] = useState<string>('');
   const [postBody, setPostBody] = useState<string>('');
   const [sendingPost, setSendingPost] = useState<boolean>(false);
+  const [postsRender, setPostsRender] = useState<any>(undefined);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   let vehicleMake = '';
 
@@ -40,6 +43,39 @@ const FeedView = (props: any) => {
         break;
     }
   }
+
+  useEffect(() => {
+    updatePosts();
+  }, [props.posts.current]);
+
+  const updatePosts = () => {
+    setPostsRender(<></>);
+
+    if (!props.posts.current) {
+      return;
+    }
+
+    if (posts) {
+      const listPosts = posts.map((post, index) => {
+        return (
+          <View key={index}>
+            <Text style={[styles.text]}>{post.title}</Text>
+            <Text style={[styles.text]}>{post.body}</Text>
+          </View>
+        );
+      });
+
+      setPostsRender(listPosts);
+    }
+  }
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    loadPosts(props).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -80,7 +116,7 @@ const FeedView = (props: any) => {
                     const files = [];
                     const type = 'normal';
 
-                    createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => { 
+                    createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => {
                       if (error) {
                         if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
                         if (DEBUG_MODE) console.error(error);
@@ -113,11 +149,25 @@ const FeedView = (props: any) => {
           </TouchableWithoutFeedback>
         </Modal>
       </View>
-      {(userSession && vehicle && carImgData)
+      {(userSession && vehicle && carImgData && posts)
         ?
-        <ScrollView style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+          style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
+        >
           <FullWidthImage source={{ uri: carImgData }} />
           <Text style={[styles.text, { textAlign: 'center', fontWeight: 'bold', fontSize: 25, marginTop: 20 }]}>{userSession.firstName}'s {vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>
+
+          {(posts.length > 0) &&
+            <>
+              {postsRender}
+            </>
+          }
         </ScrollView>
         :
         <View style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

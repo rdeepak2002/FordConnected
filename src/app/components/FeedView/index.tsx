@@ -7,12 +7,13 @@ import storage from '@react-native-firebase/storage';
 import * as ImagePicker from 'react-native-image-picker';
 
 import { useState, useEffect } from 'react';
-import { ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl, Button } from 'react-native';
+import { ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl, Button, Image } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
 import { connect } from 'react-redux';
 import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import { createPost } from '../../api/api';
 import { DEBUG_MODE } from '../../../Constants';
+import { firebase } from '@react-native-firebase/auth';
 
 const FeedView = (props: any) => {
   const { styles, colors, isDark } = useTheme();
@@ -48,6 +49,7 @@ const FeedView = (props: any) => {
 
   useEffect(() => {
     updatePosts();
+    firebase.auth().signInAnonymously();
   }, [props.posts.current, isDark]);
 
   const onRefresh = React.useCallback(() => {
@@ -97,46 +99,9 @@ const FeedView = (props: any) => {
     }
     ImagePicker.launchImageLibrary(options, response => {
       const imagePickerResponse: any = response;
-      if (imagePickerResponse) {
-        setPhoto(imagePickerResponse.uri);
-
-        // TODO: move this to when the submit button is clicked and show preview of image being uploaded
-        // TODO: add guid to filename / storage ref to prevent conflict
-        const reference = storage().ref(imagePickerResponse.fileName);
-        reference.putFile(imagePickerResponse.uri).then(()=>{
-          if(DEBUG_MODE) console.log('image uploaded');
-        }).catch((error)=>{
-          if(DEBUG_MODE) console.log('error uploading to firebase');
-          console.error(error);
-        });
-
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-        // TODO: firebase upload photo using uri above
-
-
-
-
-
-
+      if (imagePickerResponse && imagePickerResponse.assets && imagePickerResponse.assets.length > 0) {
+        const asset = imagePickerResponse.assets[0];
+        setPhoto(asset);
       }
       else {
         console.error('error opening image picker');
@@ -152,7 +117,17 @@ const FeedView = (props: any) => {
           supportedOrientations={['portrait', 'landscape']}
           backdropOpacity={0.4}
         >
-          <TouchableWithoutFeedback onPress={() => { if (!sendingPost) setPostModalVisible(false) }}>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              if (!sendingPost) {
+                setSendingPost(false);
+                setPostModalVisible(false);
+                setPostTitle('');
+                setPostBody('');
+                setPhoto(null);
+              }
+            }}
+          >
             <View style={[styles.centeredView]}>
               <View style={[styles.modalView, { width: '100%' }]}>
                 <View style={[styles.inputContainer, { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }]}>
@@ -172,6 +147,16 @@ const FeedView = (props: any) => {
                     style={[styles.input, { width: '100%', height: 100, marginBottom: 20 }]}
                     placeholderTextColor="#474b52"
                   />
+                </View>
+                <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
+                  {(photo && photo.uri) &&
+                    <Image
+                      source={{
+                        uri: photo.uri,
+                      }}
+                      style={{ width: 100, height: 100 }}
+                    />
+                  }
                   <Button title="Choose Photo" onPress={handleChoosePhoto} />
                 </View>
                 <Pressable
@@ -182,6 +167,17 @@ const FeedView = (props: any) => {
                     const visibility = 'friends';
                     const files = [];
                     const type = 'normal';
+
+                    // TODO: move this to when the submit button is clicked and show preview of image being uploaded
+                    // TODO: add guid to filename / storage ref to prevent conflict
+
+                    const reference = storage().ref(photo.fileName);
+                    reference.putFile(photo.uri).then(() => {
+                      if (DEBUG_MODE) console.log('post image uploaded');
+                    }).catch((error) => {
+                      if (DEBUG_MODE) console.log('error uploading post image to firebase');
+                      console.error(error);
+                    });
 
                     createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => {
                       if (error) {
@@ -199,6 +195,7 @@ const FeedView = (props: any) => {
                           setPostModalVisible(false);
                           setPostTitle('');
                           setPostBody('');
+                          setPhoto(null);
                         });
                       }
                       else {
@@ -232,7 +229,7 @@ const FeedView = (props: any) => {
           }
           style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
           onScroll={handleScroll}
-          scrollEventThrottle={16}
+          scrollEventThrottle={1}
         >
           <FullWidthImage source={{ uri: carImgData }} />
           <Text style={[styles.text, { textAlign: 'center', fontWeight: 'bold', fontSize: 25, marginTop: 20, marginBottom: 15 }]}>{userSession.firstName}'s {vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>

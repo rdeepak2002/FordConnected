@@ -2,7 +2,6 @@ import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 import { DEBUG_MODE, REACT_APP_API_URL, REACT_APP_API_VERSION, REACT_APP_APPLICATION_ID, REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET } from '../../Constants';
 import { retrieveUserSession, storeUserSession } from '../utilities/userSession';
-import { MMKV } from 'react-native-mmkv';
 
 const loginUser = async (username: string, firstName: string, lastName: string, code: string): Promise<[response: any, error: any]> => {
   const postData: any = JSON.stringify({
@@ -186,7 +185,7 @@ const getVehicles = async (userSession: any, props: any): Promise<[response: any
       const data = await axios.post(url, postData);
       if (data.data.data) {
         response = data.data.data.getVehicles;
-        MMKV.set('vehicles', JSON.stringify(response));
+        // MMKV.set('vehicles', JSON.stringify(response));
       }
       error = data.data.errors;
     }

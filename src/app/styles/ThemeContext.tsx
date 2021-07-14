@@ -19,7 +19,7 @@ const getStyles = (colors: any) => {
       borderRadius: 2
     },
     inputContainer: {
-      marginBottom: 20,
+      marginBottom: 10,
       shadowColor: '#000',
       shadowOffset: {
         width: 0,

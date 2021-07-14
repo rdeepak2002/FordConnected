@@ -175,6 +175,7 @@ const FeedView = (props: any) => {
           }
           style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
           onScroll={handleScroll}
+          scrollEventThrottle={16}
         >
           <FullWidthImage source={{ uri: carImgData }} />
           <Text style={[styles.text, { textAlign: 'center', fontWeight: 'bold', fontSize: 25, marginTop: 20, marginBottom: 15 }]}>{userSession.firstName}'s {vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>

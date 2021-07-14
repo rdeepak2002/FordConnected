@@ -244,10 +244,12 @@ export const loadFriends = async (props: any) => {
         let friendsList: Array<any> = [];
 
         for (let i = 0; i < friendsListNotParsed.length; i++) {
-          const person1 = friendsListNotParsed[i].pair[0];
-          const person2 = friendsListNotParsed[i].pair[1];
-          const friend = (person1.id === userSession.id) ? person2 : person1;
-          friendsList.push(friend);
+          if(friendsListNotParsed[i].status === 'ACCEPTED') {
+            const person1 = friendsListNotParsed[i].pair[0];
+            const person2 = friendsListNotParsed[i].pair[1];
+            const friend = (person1.id === userSession.id) ? person2 : person1;
+            friendsList.push(friend);
+          }
         }
 
         props.setFriends(friendsList);

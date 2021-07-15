@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { addFriend, deleteFriend } from '../../api/api';
 import { useTheme } from '../../styles/ThemeContext';
-import { loadFriends, mapDispatchToProps, mapStateToProps } from '../HomeView';
+import { loadFriends, loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import FadeInOut from 'react-native-fade-in-out';
 
 const SearchView = (props: any) => {
@@ -94,8 +94,8 @@ const SearchView = (props: any) => {
                   {
                     text: 'Ok', onPress: (() => {
                       deleteFriend(friend.username, props.userSession.current, props).then(() => {
-                        loadFriends(props).then(() => {
-                        });
+                        loadFriends(props);
+                        loadPosts(props);
                       });
                     })
                   },

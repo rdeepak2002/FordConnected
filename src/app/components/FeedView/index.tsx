@@ -15,6 +15,7 @@ import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import { createPost, deletePost, getPosts } from '../../api/api';
 import { DEBUG_MODE } from '../../../Constants';
 import { firebase } from '@react-native-firebase/auth';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const FeedView = (props: any) => {
   const { styles, colors, isDark } = useTheme();
@@ -28,6 +29,7 @@ const FeedView = (props: any) => {
   const [postModalVisible, setPostModalVisible] = useState<boolean>(false);
   const [postTitle, setPostTitle] = useState<string>('');
   const [postBody, setPostBody] = useState<string>('');
+  const [postVisibility, setPostVisibility] = useState<string>('friends');
   const [sendingPost, setSendingPost] = useState<boolean>(false);
   const [postsRender, setPostsRender] = useState<any>(undefined);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -36,6 +38,11 @@ const FeedView = (props: any) => {
   const [photo, setPhoto] = useState<any>(null);
   const [deletingPost, setDeletingPost] = useState<boolean>(false);
   const [initLoadPosts, setInitLoadPosts] = useState<boolean>(true);
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { label: 'Visible to friends', value: 'friends' },
+    { label: 'Visible to everyone', value: 'public' }
+  ]);
 
   let vehicleMake = '';
 
@@ -51,14 +58,14 @@ const FeedView = (props: any) => {
   }
 
   useEffect(() => {
-    if(initLoadPosts) {
+    if (initLoadPosts) {
       loadPosts(props);
       setInitLoadPosts(false);
     }
 
     updatePosts();
     firebase.auth().signInAnonymously();
-  }, [props.posts.current, isDark]);
+  }, [props.posts, props.posts.current, isDark]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -78,9 +85,9 @@ const FeedView = (props: any) => {
   const updatePosts = () => {
     setPostsRender(<></>);
 
-    if (!props.posts.current || !props.userSession.current) {
-      return;
-    }
+    // if (!props.posts.current || !props.userSession.current) {
+    //   return;
+    // }
 
     if (props.posts.current) {
       const listPosts = posts.map((post, index) => {
@@ -117,7 +124,7 @@ const FeedView = (props: any) => {
           }}>
             <View style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
               <View style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, borderColor: isDark ? 'rgba(150,150,150,1.0)' : 'rgba(240,240,240,1.0)', borderBottomWidth: 1, flexDirection: 'row', alignItems: 'center' }}>
-                <Image style={{marginLeft: 10, width: 35, height: 35, borderRadius: 18, borderColor: 'black', borderWidth: 0.1}} source={{uri: post.user.profilePictureUrl}}/>
+                <Image style={{ marginLeft: 10, width: 35, height: 35, borderRadius: 18, borderColor: 'black', borderWidth: 0.1 }} source={{ uri: post.user.profilePictureUrl }} />
                 <Text style={[styles.text, { fontWeight: 'bold', fontSize: 25, padding: 10 }]}>
                   {post.user.id === props.userSession.current.id ? 'Me' : `${post.user.firstName} ${post.user.lastName}`}
                 </Text>
@@ -166,7 +173,6 @@ const FeedView = (props: any) => {
 
     setSendingPost(true);
 
-    const visibility = 'friends';
     const files = [];
     const type = 'normal';
 
@@ -176,7 +182,7 @@ const FeedView = (props: any) => {
         console.log('download url', downloadUrl);
         files.push(`"${downloadUrl}"`);
       }
-      createPost(props.userSession.current, props, visibility, postTitle.replace(/"/g, '\\"'), `""${postBody.replace(/"/g, '\\"')}""`, files, type).then(([data, error]) => {
+      createPost(props.userSession.current, props, postVisibility, postTitle.replace(/"/g, '\\"'), `""${postBody.replace(/"/g, '\\"')}""`, files, type).then(([data, error]) => {
         if (error) {
           if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
           if (DEBUG_MODE) console.error(error);
@@ -192,7 +198,9 @@ const FeedView = (props: any) => {
             setPostModalVisible(false);
             setPostTitle('');
             setPostBody('');
+            setPostVisibility('friends');
             setPhoto(null);
+            setOpen(false);
           });
         }
         else {
@@ -232,7 +240,7 @@ const FeedView = (props: any) => {
           >
             <View style={[styles.centeredView]}>
               <View style={[styles.modalView, { width: '100%' }]}>
-                <ScrollView style={{ width: '100%' }}>
+                <View style={{ width: '100%' }}>
                   <View style={[styles.inputContainer, { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }]}>
                     <TextInput
                       placeholder={'Topic'}
@@ -249,6 +257,18 @@ const FeedView = (props: any) => {
                       onChange={event => setPostBody(`${event.nativeEvent.text}`)}
                       style={[styles.input, { width: '100%', height: 100, marginBottom: 20 }]}
                       placeholderTextColor="#474b52"
+                    />
+                  </View>
+                  <View style={{height: open ? 150 : 80}}>
+                    <DropDownPicker
+                      open={open}
+                      value={postVisibility}
+                      items={items}
+                      setOpen={setOpen}
+                      setValue={(value) => {
+                        setPostVisibility(value)
+                      }}
+                      setItems={setItems}
                     />
                   </View>
                   <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
@@ -282,16 +302,18 @@ const FeedView = (props: any) => {
                     }
                   </Pressable>
                   <View style={{ marginTop: 20 }}>
-                    <Button title="Close" color={isDark ? 'white' : 'rgba(230, 50, 50, 1.0)'} onPress={() => {
+                    <Button title='Close' color={isDark ? 'white' : 'rgba(230, 50, 50, 1.0)'} onPress={() => {
                       if (!sendingPost) {
                         setPostModalVisible(false);
                         setPhoto(null);
                         setPostTitle('');
                         setPostBody('');
+                        setPostVisibility('friends');
+                        setOpen(false);
                       }
                     }} />
                   </View>
-                </ScrollView>
+                </View>
               </View>
             </View>
           </TouchableWithoutFeedback>

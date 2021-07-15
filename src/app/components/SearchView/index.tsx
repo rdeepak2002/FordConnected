@@ -22,8 +22,8 @@ const SearchView = (props: any) => {
   const friendsList = props.friends.current;
   const friendRequestedList = props.friends.requested;
 
-  const makeAddFriendRequest = (username: string, showPopup?: boolean) => {
-    addFriend(username, props.userSession.current, props).then(([response, error]) => {
+  const makeAddFriendRequest = async (username: string, showPopup?: boolean) => {
+    await addFriend(username, props.userSession.current, props).then(([response, error]) => {
       setMakingFriendRequest(false);
 
       if (response) {
@@ -185,7 +185,9 @@ const SearchView = (props: any) => {
                 <Button
                   title='Accept'
                   onPress={() => {
-                    makeAddFriendRequest(friend.username);
+                    makeAddFriendRequest(friend.username).then(()=>{
+                      loadFriends(props);
+                    });
                   }}
                   color={isDark ? 'white' : '#1973e8'}
                 />

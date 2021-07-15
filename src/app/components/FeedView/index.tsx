@@ -84,6 +84,9 @@ const FeedView = (props: any) => {
 
     if (props.posts.current) {
       const listPosts = posts.map((post, index) => {
+        const postDate = new Date(post.updatedAt);
+        postDate.setUTCHours(postDate.getHours());
+
         return (
           <TouchableWithoutFeedback key={post.id} onLongPress={() => {
             if (post && props.userSession.current && post.userId === props.userSession.current.id) {
@@ -113,7 +116,7 @@ const FeedView = (props: any) => {
             }
           }}>
             <View style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
-              <View style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, borderColor: 'rgba(240,240,240,1.0)', borderBottomWidth: 3, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, borderColor: isDark ? 'rgba(150,150,150,1.0)' : 'rgba(240,240,240,1.0)', borderBottomWidth: 1, flexDirection: 'row', alignItems: 'center' }}>
                 <Image style={{marginLeft: 10, width: 35, height: 35, borderRadius: 18, borderColor: 'black', borderWidth: 0.1}} source={{uri: post.user.profilePictureUrl}}/>
                 <Text style={[styles.text, { fontWeight: 'bold', fontSize: 25, padding: 10 }]}>
                   {post.user.id === props.userSession.current.id ? 'Me' : `${post.user.firstName} ${post.user.lastName}`}
@@ -125,6 +128,11 @@ const FeedView = (props: any) => {
               <View style={{ padding: 10 }}>
                 <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
                 <Text style={[styles.text, { fontSize: 15 }]}>{post.body}</Text>
+              </View>
+              <View style={{ borderTopLeftRadius: 10, marginTop: 10, borderTopRightRadius: 10, borderColor: isDark ? 'rgba(150,150,150,1.0)' : 'rgba(240,240,240,1.0)', borderTopWidth: 1, flexDirection: 'row-reverse', alignItems: 'center' }}>
+                <Text style={[styles.text, { fontSize: 15, padding: 10 }]}>
+                  {postDate.toLocaleString("en-US", {timeZone: "America/Los_Angeles"})}
+                </Text>
               </View>
             </View>
           </TouchableWithoutFeedback>

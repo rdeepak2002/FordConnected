@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react';
 import { AuthContext } from '../../../App';
 import { retrieveUserSession } from '../../utilities/userSession';
 import { getCarImageFull, getFriends, getPosts, getVehicles, refreshTokens, updateUserVehicles } from '../../api/api';
-import { setUserSession } from '../../redux/actions/UserSessionActions';
+import { setUserSession, setUserProfilePicture } from '../../redux/actions/UserSessionActions';
 import { setVehicles, setCarImage } from '../../redux/actions/VehiclesActions';
 import { setPosts } from '../../redux/actions/PostsActions';
 import { setFriends, setFriendsRequested } from '../../redux/actions/FriendsActions';
@@ -298,7 +298,8 @@ export const mapDispatchToProps = dispatch => (
     setFriends,
     setFriendsRequested,
     setCarImage,
-    setPosts
+    setPosts,
+    setUserProfilePicture
   }, dispatch)
 );
 

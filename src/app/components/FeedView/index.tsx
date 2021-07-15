@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 import FadeInOut from 'react-native-fade-in-out';
 import storage from '@react-native-firebase/storage';
 import uuid from 'react-native-uuid';
+import DropDownPicker from 'react-native-dropdown-picker';
 import * as ImagePicker from 'react-native-image-picker';
 
 import { useState, useEffect } from 'react';
@@ -15,7 +16,6 @@ import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import { createPost, deletePost, getPosts } from '../../api/api';
 import { DEBUG_MODE } from '../../../Constants';
 import { firebase } from '@react-native-firebase/auth';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 const FeedView = (props: any) => {
   const { styles, colors, isDark } = useTheme();

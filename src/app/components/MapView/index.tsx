@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MapView from 'react-native-maps';
 import Modal from 'react-native-modal';
 
-import { Text, SafeAreaView, View, ActivityIndicator, TouchableWithoutFeedback, Pressable, TouchableHighlight } from 'react-native';
+import { Text, SafeAreaView, View, ActivityIndicator, TouchableWithoutFeedback, Image } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
 import { connect } from 'react-redux';
 import { mapDispatchToProps, mapStateToProps } from '../HomeView';
@@ -42,7 +42,7 @@ const MapViewScreen = (props: any) => {
   const updateMarkers = () => {
     setMarkers(<></>);
 
-    if(!props.friends.current) {
+    if (!props.friends.current) {
       return;
     }
 
@@ -82,6 +82,10 @@ const MapViewScreen = (props: any) => {
             title='click here for more info'
           >
             <View style={[styles.container, { padding: 10, borderRadius: 5, borderWidth: 0.5, borderColor: colors.borderColor }]}>
+              <View style={{display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                <Image style={{ width: 35, height: 35, borderRadius: 18, borderColor: 'black', borderWidth: 0.1 }} source={{ uri: friend.profilePictureUrl }} />
+              </View>
+
               <Text style={[styles.text, { fontSize: 18, fontWeight: 'bold' }]}>{friendName}</Text>
               <Text style={[styles.text, { fontSize: 12 }]}>{carName}</Text>
             </View>

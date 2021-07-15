@@ -131,7 +131,7 @@ const FeedView = (props: any) => {
               </View>
               <View style={{ borderTopLeftRadius: 10, marginTop: 10, borderTopRightRadius: 10, borderColor: isDark ? 'rgba(150,150,150,1.0)' : 'rgba(240,240,240,1.0)', borderTopWidth: 1, flexDirection: 'row-reverse', alignItems: 'center' }}>
                 <Text style={[styles.text, { fontSize: 15, padding: 10 }]}>
-                  {postDate.toLocaleString("en-US", {timeZone: "America/Los_Angeles"})}
+                  {postDate.toLocaleString("en-US")}
                 </Text>
               </View>
             </View>

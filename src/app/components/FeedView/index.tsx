@@ -35,6 +35,7 @@ const FeedView = (props: any) => {
   const [dScroll, setDScroll] = useState<number>(0);
   const [photo, setPhoto] = useState<any>(null);
   const [deletingPost, setDeletingPost] = useState<boolean>(false);
+  const [initLoadPosts, setInitLoadPosts] = useState<boolean>(true);
 
   let vehicleMake = '';
 
@@ -50,6 +51,11 @@ const FeedView = (props: any) => {
   }
 
   useEffect(() => {
+    if(initLoadPosts) {
+      loadPosts(props);
+      setInitLoadPosts(false);
+    }
+
     updatePosts();
     firebase.auth().signInAnonymously();
   }, [props.posts.current, isDark]);

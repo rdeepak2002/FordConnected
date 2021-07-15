@@ -65,7 +65,7 @@ const FeedView = (props: any) => {
 
     updatePosts();
     firebase.auth().signInAnonymously();
-  }, [props.posts, props.posts.current, isDark]);
+  }, [props.posts.current, props.userSession.current, isDark]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -85,11 +85,7 @@ const FeedView = (props: any) => {
   const updatePosts = () => {
     setPostsRender(<></>);
 
-    // if (!props.posts.current || !props.userSession.current) {
-    //   return;
-    // }
-
-    if (props.posts.current) {
+    if (props.userSession.current && props.posts.current) {
       const listPosts = posts.map((post, index) => {
         const postDate = new Date(post.updatedAt);
         postDate.setUTCHours(postDate.getHours());

@@ -4,3 +4,10 @@ export const setUserSession = userSession => (
     payload: userSession,
   }
 );
+
+export const setUserProfilePicture = userProfilePictureUri => (
+  {
+    type: 'SET_USER_PROFILE_PICTURE',
+    payload: userProfilePictureUri,
+  }
+);

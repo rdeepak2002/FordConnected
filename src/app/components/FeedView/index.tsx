@@ -8,7 +8,7 @@ import uuid from 'react-native-uuid';
 import * as ImagePicker from 'react-native-image-picker';
 
 import { useState, useEffect } from 'react';
-import { ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl, Button, Image } from 'react-native';
+import { Keyboard, ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl, Button, Image } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
 import { connect } from 'react-redux';
 import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
@@ -80,7 +80,7 @@ const FeedView = (props: any) => {
         return (
           <View key={index} style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
             {(post.files && post.files.length > 0) &&
-              <FullWidthImage source={{ uri: post.files[0] }} style={{borderTopLeftRadius: 10, borderTopRightRadius: 10}}/>
+              <FullWidthImage source={{ uri: post.files[0] }} style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
             }
             <View style={{ padding: 10 }}>
               <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
@@ -110,6 +110,60 @@ const FeedView = (props: any) => {
     })
   }
 
+  const handlePostBtn = () => {
+    setSendingPost(true);
+
+    const visibility = 'friends';
+    const files = [];
+    const type = 'normal';
+
+    const submit = async (reference) => {
+      if (reference) {
+        const downloadUrl = await reference.getDownloadURL();
+        console.log('download url', downloadUrl);
+        files.push(`"${downloadUrl}"`);
+      }
+      createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => {
+        if (error) {
+          if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
+          if (DEBUG_MODE) console.error(error);
+          setSendingPost(false);
+        }
+        else if (data) {
+          if (DEBUG_MODE) console.log('post sent!');
+
+          // get the post
+          loadPosts(props).then(() => {
+            // reset form
+            setSendingPost(false);
+            setPostModalVisible(false);
+            setPostTitle('');
+            setPostBody('');
+            setPhoto(null);
+          });
+        }
+        else {
+          if (DEBUG_MODE) console.error('CREATE POST ERROR', 'APP ERROR');
+          setSendingPost(false);
+        }
+      });
+    }
+
+    if (photo && photo.uri) {
+      const reference = storage().ref(photo.fileName + uuid.v4().toString());
+      reference.putFile(photo.uri).then((res) => {
+        if (DEBUG_MODE) console.log('post image uploaded');
+        submit(reference);
+      }).catch((error) => {
+        if (DEBUG_MODE) console.log('error uploading post image to firebase');
+        console.error(error);
+      });
+    }
+    else {
+      submit(undefined);
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -120,110 +174,71 @@ const FeedView = (props: any) => {
         >
           <TouchableWithoutFeedback
             onPress={() => {
-              if (!sendingPost) {
-                setSendingPost(false);
-                setPostModalVisible(false);
-                setPostTitle('');
-                setPostBody('');
-                setPhoto(null);
-              }
+              Keyboard.dismiss();
             }}
           >
             <View style={[styles.centeredView]}>
               <View style={[styles.modalView, { width: '100%' }]}>
-                <View style={[styles.inputContainer, { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }]}>
-                  <TextInput
-                    placeholder={'Topic'}
-                    value={postTitle}
-                    onChange={event => setPostTitle(event.nativeEvent.text)}
-                    style={[styles.input, { width: '100%', marginBottom: 20 }]}
-                    placeholderTextColor="#474b52"
-                  />
-                  <TextInput
-                    placeholder={'What\'s on your mind?'}
-                    multiline={true}
-                    numberOfLines={10}
-                    value={postBody}
-                    onChange={event => setPostBody(event.nativeEvent.text)}
-                    style={[styles.input, { width: '100%', height: 100, marginBottom: 20 }]}
-                    placeholderTextColor="#474b52"
-                  />
-                </View>
-                <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                  {(photo && photo.uri) &&
-                    <Image
-                      source={{
-                        uri: photo.uri,
-                      }}
-                      style={{ width: 100, height: 100 }}
+                <ScrollView style={{ width: '100%' }}>
+                  <View style={[styles.inputContainer, { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }]}>
+                    <TextInput
+                      placeholder={'Topic'}
+                      value={postTitle}
+                      onChange={event => setPostTitle(event.nativeEvent.text)}
+                      style={[styles.input, { width: '100%', marginBottom: 20 }]}
+                      placeholderTextColor="#474b52"
                     />
-                  }
-                  <Button title="Choose Photo" onPress={handleChoosePhoto} />
-                </View>
-                <Pressable
-                  style={[styles.button, styles.sendRequestBtn]}
-                  onPress={() => {
-                    setSendingPost(true);
-
-                    const visibility = 'friends';
-                    const files = [];
-                    const type = 'normal';
-
-                    const submit = async (reference) => {
-                      if(reference) {
-                        const downloadUrl = await reference.getDownloadURL();
-                        console.log('download url', downloadUrl);
-                        files.push(`"${downloadUrl}"`);
+                    <TextInput
+                      placeholder={'What\'s on your mind?'}
+                      multiline={true}
+                      numberOfLines={10}
+                      value={postBody}
+                      onChange={event => setPostBody(event.nativeEvent.text)}
+                      style={[styles.input, { width: '100%', height: 100, marginBottom: 20 }]}
+                      placeholderTextColor="#474b52"
+                    />
+                  </View>
+                  <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                    {(photo && photo.uri) &&
+                      <Image
+                        source={{
+                          uri: photo.uri,
+                        }}
+                        style={{ width: 100, height: 100 }}
+                      />
+                    }
+                    <Button title={(photo && photo.uri) ? 'Remove Photo' : 'Add Photo'} color={isDark ? 'white' : '#1973e8'} onPress={() => {
+                      if (photo && photo.uri) {
+                        setPhoto(null);
                       }
-                      createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => {
-                        if (error) {
-                          if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
-                          if (DEBUG_MODE) console.error(error);
-                          setSendingPost(false);
-                        }
-                        else if (data) {
-                          if (DEBUG_MODE) console.log('post sent!');
-
-                          // get the post
-                          loadPosts(props).then(() => {
-                            // reset form
-                            setSendingPost(false);
-                            setPostModalVisible(false);
-                            setPostTitle('');
-                            setPostBody('');
-                            setPhoto(null);
-                          });
-                        }
-                        else {
-                          if (DEBUG_MODE) console.error('CREATE POST ERROR', 'APP ERROR');
-                          setSendingPost(false);
-                        }
-                      });
+                      else {
+                        handleChoosePhoto();
+                      }
+                    }} />
+                  </View>
+                  <Pressable
+                    style={[styles.button, styles.sendRequestBtn]}
+                    onPress={handlePostBtn}
+                  >
+                    {
+                      sendingPost
+                        ?
+                        <ActivityIndicator size='small' color='white' />
+                        :
+                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Post</Text>
                     }
-
-                    if (photo && photo.uri) {
-                      const reference = storage().ref(photo.fileName + uuid.v4().toString());
-                      reference.putFile(photo.uri).then((res) => {
-                        if (DEBUG_MODE) console.log('post image uploaded');
-                        submit(reference);
-                      }).catch((error) => {
-                        if (DEBUG_MODE) console.log('error uploading post image to firebase');
-                        console.error(error);
-                      });
-                    }
-                    else {
-                      submit(undefined);
-                    }
-                  }}
-                >
-                  {
-                    sendingPost
-                      ?
-                      <ActivityIndicator size='small' color='white' />
-                      :
-                      <Text style={{ color: 'white', fontWeight: 'bold' }}>Post</Text>
-                  }
-                </Pressable>
+                  </Pressable>
+                  <View style={{ marginTop: 20 }}>
+                    <Button title="Close" color={isDark ? 'white' : 'rgba(230, 50, 50, 1.0)'} onPress={() => {
+                      if (!sendingPost) {
+                        setPostModalVisible(false);
+                        setPhoto(null);
+                        setPostTitle('');
+                        setPostBody('');
+                      }
+                    }} />
+                  </View>
+                </ScrollView>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -258,7 +273,7 @@ const FeedView = (props: any) => {
       }
 
       {(userSession && vehicle && carImgData) &&
-        <FadeInOut visible={!postModalVisible && (scrollPos === 0)}>
+        <FadeInOut visible={!postModalVisible && (scrollPos <= 10)}>
           <Pressable onPress={() => { setPostModalVisible(true) }} style={[styles.postBtnContainer]}>
             <MaterialCommunityIcons style={{ elevation: 3 }} name='pen' color={colors.createPostGlyph} size={25} />
           </Pressable>

@@ -3,7 +3,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
 
 import { useState } from 'react';
-import { Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { Keyboard, Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { addFriend } from '../../api/api';
@@ -85,7 +85,9 @@ const SearchView = (props: any) => {
           supportedOrientations={['portrait', 'landscape']}
           backdropOpacity={0.4}
         >
-          <TouchableWithoutFeedback onPress={() => { if (!makingFriendRequest) setModalVisible(false) }}>
+          <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+          }}>
             <View style={[styles.centeredView]}>
               <View style={[styles.modalView, { width: '80%' }]}>
                 <View style={[styles.inputContainer, { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
@@ -147,6 +149,14 @@ const SearchView = (props: any) => {
                       <Text style={{ color: 'white', fontWeight: 'bold' }}>Send Request</Text>
                   }
                 </Pressable>
+                <View style={{ marginTop: 20 }}>
+                  <Button title="Close" color={isDark ? 'white' : 'rgba(230, 50, 50, 1.0)'} onPress={() => {
+                    if (!makingFriendRequest) {
+                      setModalVisible(false);
+                      setFriendUsername('');
+                    }
+                  }} />
+                </View>
               </View>
             </View>
           </TouchableWithoutFeedback>

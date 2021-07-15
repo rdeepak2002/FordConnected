@@ -67,6 +67,9 @@ const LoginView = (props: any) => {
     if (event && event.nativeEvent && event.nativeEvent.data) {
       setUsername(event.nativeEvent.data);
     }
+    else {
+      console.error('error getting username');
+    }
   };
 
   const register = () => {

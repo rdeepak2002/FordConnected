@@ -8,11 +8,11 @@ import uuid from 'react-native-uuid';
 import * as ImagePicker from 'react-native-image-picker';
 
 import { useState, useEffect } from 'react';
-import { Keyboard, ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl, Button, Image } from 'react-native';
+import { Keyboard, ActivityIndicator, Text, SafeAreaView, View, ScrollView, TouchableWithoutFeedback, TextInput, Pressable, RefreshControl, Button, Image, Alert } from 'react-native';
 import { useTheme } from '../../styles/ThemeContext';
 import { connect } from 'react-redux';
 import { loadPosts, mapDispatchToProps, mapStateToProps } from '../HomeView';
-import { createPost } from '../../api/api';
+import { createPost, deletePost, getPosts } from '../../api/api';
 import { DEBUG_MODE } from '../../../Constants';
 import { firebase } from '@react-native-firebase/auth';
 
@@ -78,15 +78,33 @@ const FeedView = (props: any) => {
     if (props.posts.current) {
       const listPosts = posts.map((post, index) => {
         return (
-          <View key={index} style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
-            {(post.files && post.files.length > 0) &&
-              <FullWidthImage source={{ uri: post.files[0] }} style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
+          <TouchableWithoutFeedback onLongPress={() => {
+            if (post && props.userSession.current && post.userId === props.userSession.current.id) {
+              Alert.alert(
+                'Delete Post?',
+                '',
+                [
+                  { text: 'Ok', onPress: (() => { 
+                    deletePost(post.id, props.userSession.current, props).then(()=>{
+                      loadPosts(props);
+                    });
+                  }) },
+                  { text: 'Cancel', onPress: (() => { }) },
+                ],
+                { cancelable: false },
+              );
             }
-            <View style={{ padding: 10 }}>
-              <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
-              <Text style={[styles.text, { fontSize: 15 }]}>{post.body}</Text>
+          }}>
+            <View key={index} style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
+              {(post.files && post.files.length > 0) &&
+                <FullWidthImage source={{ uri: post.files[0] }} style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
+              }
+              <View style={{ padding: 10 }}>
+                <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
+                <Text style={[styles.text, { fontSize: 15 }]}>{post.body}</Text>
+              </View>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
         );
       });
 

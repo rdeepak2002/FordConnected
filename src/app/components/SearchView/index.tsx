@@ -44,7 +44,7 @@ const SearchView = (props: any) => {
         return (
           <View key={friend.id} style={{ marginLeft: 5, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
             <Image
-              source={require('../../assets/defaultProfile.jpg')}
+              source={{uri: friend.profilePictureUrl}}
               style={{
                 width: imageSideLength,
                 height: imageSideLength,

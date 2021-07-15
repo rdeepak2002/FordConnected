@@ -263,6 +263,7 @@ const getFriends = async (userSession: any, props: any): Promise<[response: any,
               updatedAt
               createdAt
               lastActive
+              profilePictureUrl
               vehicles {
                   id
                   userId
@@ -423,6 +424,7 @@ const createPost = async (userSession: any, props: any, visibility: string, titl
             updatedAt
             createdAt
             lastActive
+            profilePictureUrl
             vehicles {
               id
               userId
@@ -514,6 +516,7 @@ const getPosts = async (userSession: any, props: any): Promise<[response: any, e
             updatedAt
             createdAt
             lastActive
+            profilePictureUrl
             vehicles {
               id
               userId
@@ -604,6 +607,7 @@ const deletePost = async (postId: string, userSession: any, props: any): Promise
             updatedAt
             createdAt
             lastActive
+            profilePictureUrl
             vehicles {
               id
               userId

@@ -34,6 +34,7 @@ const FeedView = (props: any) => {
   const [scrollPos, setScrollPos] = useState<number>(0);
   const [dScroll, setDScroll] = useState<number>(0);
   const [photo, setPhoto] = useState<any>(null);
+  const [deletingPost, setDeletingPost] = useState<boolean>(false);
 
   let vehicleMake = '';
 
@@ -71,33 +72,49 @@ const FeedView = (props: any) => {
   const updatePosts = () => {
     setPostsRender(<></>);
 
-    if (!props.posts.current) {
+    if (!props.posts.current || !props.userSession.current) {
       return;
     }
 
     if (props.posts.current) {
       const listPosts = posts.map((post, index) => {
         return (
-          <TouchableWithoutFeedback onLongPress={() => {
+          <TouchableWithoutFeedback key={post.id} onLongPress={() => {
             if (post && props.userSession.current && post.userId === props.userSession.current.id) {
               Alert.alert(
                 'Delete Post?',
                 '',
                 [
-                  { text: 'Ok', onPress: (() => { 
-                    deletePost(post.id, props.userSession.current, props).then(()=>{
-                      loadPosts(props);
-                    });
-                  }) },
+                  {
+                    text: 'Ok', onPress: (() => {
+                      setDeletingPost(true);
+
+                      deletePost(post.id, props.userSession.current, props).then(() => {
+                        loadPosts(props).then(() => {
+                          setDeletingPost(false);
+                        }).catch(() => {
+                          setDeletingPost(false);
+                        });
+                      }).catch(() => {
+                        setDeletingPost(false);
+                      });
+                    })
+                  },
                   { text: 'Cancel', onPress: (() => { }) },
                 ],
                 { cancelable: false },
               );
             }
           }}>
-            <View key={index} style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
+            <View style={[styles.postContainer, { borderRadius: 10, backgroundColor: colors.postInnerContainerColor }]}>
+              <View style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, borderColor: 'rgba(240,240,240,1.0)', borderBottomWidth: 3, flexDirection: 'row', alignItems: 'center' }}>
+                <Image style={{marginLeft: 10, width: 35, height: 35, borderRadius: 18, borderColor: 'black', borderWidth: 0.1}} source={{uri: post.user.profilePictureUrl}}/>
+                <Text style={[styles.text, { fontWeight: 'bold', fontSize: 25, padding: 10 }]}>
+                  {post.user.id === props.userSession.current.id ? 'Me' : `${post.user.firstName} ${post.user.lastName}`}
+                </Text>
+              </View>
               {(post.files && post.files.length > 0) &&
-                <FullWidthImage source={{ uri: post.files[0] }} style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
+                <FullWidthImage source={{ uri: post.files[0] }} style={{}} />
               }
               <View style={{ padding: 10 }}>
                 <Text style={[styles.text, { fontWeight: 'bold', fontSize: 20, marginBottom: 5 }]}>{post.title}</Text>
@@ -129,6 +146,10 @@ const FeedView = (props: any) => {
   }
 
   const handlePostBtn = () => {
+    if (sendingPost || postTitle.length === 0 || postBody.length === 0) {
+      return;
+    }
+
     setSendingPost(true);
 
     const visibility = 'friends';
@@ -141,7 +162,7 @@ const FeedView = (props: any) => {
         console.log('download url', downloadUrl);
         files.push(`"${downloadUrl}"`);
       }
-      createPost(props.userSession.current, props, visibility, postTitle, postBody, files, type).then(([data, error]) => {
+      createPost(props.userSession.current, props, visibility, postTitle.replace(/"/g, '\\"'), `""${postBody.replace(/"/g, '\\"')}""`, files, type).then(([data, error]) => {
         if (error) {
           if (DEBUG_MODE) console.error('CREATE POST ERROR', 'SERVER ERROR');
           if (DEBUG_MODE) console.error(error);
@@ -211,7 +232,7 @@ const FeedView = (props: any) => {
                       multiline={true}
                       numberOfLines={10}
                       value={postBody}
-                      onChange={event => setPostBody(event.nativeEvent.text)}
+                      onChange={event => setPostBody(`${event.nativeEvent.text}`)}
                       style={[styles.input, { width: '100%', height: 100, marginBottom: 20 }]}
                       placeholderTextColor="#474b52"
                     />
@@ -262,7 +283,7 @@ const FeedView = (props: any) => {
           </TouchableWithoutFeedback>
         </Modal>
       </View>
-      {(userSession && vehicle && carImgData && posts)
+      {(userSession && vehicle && carImgData && posts && !deletingPost)
         ?
         <ScrollView
           refreshControl={

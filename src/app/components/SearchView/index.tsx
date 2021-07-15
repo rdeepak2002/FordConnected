@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Keyboard, Text, Image, SafeAreaView, View, ActivityIndicator, Button, Pressable, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import { addFriend } from '../../api/api';
+import { addFriend, deleteFriend } from '../../api/api';
 import { useTheme } from '../../styles/ThemeContext';
 import { loadFriends, mapDispatchToProps, mapStateToProps } from '../HomeView';
 import FadeInOut from 'react-native-fade-in-out';
@@ -29,7 +29,7 @@ const SearchView = (props: any) => {
       if (response) {
         setModalVisible(false);
         setFriendUsername('');
-        if(showPopup) {
+        if (showPopup) {
           Alert.alert(
             'Friend Request Sent!',
             '',
@@ -85,25 +85,46 @@ const SearchView = (props: any) => {
         }
 
         return (
-          <View key={friend.id} style={{ marginLeft: 5, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-            <Image
-              source={{ uri: friend.profilePictureUrl }}
-              style={{
-                width: imageSideLength,
-                height: imageSideLength,
-                borderRadius: imageSideLength / 2,
-                marginLeft: 10,
-                borderWidth: 0.5,
-                borderColor: 'grey'
-              }}
-            />
-            <View style={{ height: imageSideLength, marginLeft: 20, marginTop: 10, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
-              <Text style={[styles.text, { fontSize: 20 }]}>{friend.firstName} {friend.lastName}</Text>
-              {vehicle &&
-                <Text style={[styles.textSecondary, { fontSize: 15, marginTop: 2 }]}>{vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>
-              }
+          <TouchableWithoutFeedback key={friend.id} onLongPress={() => {
+            if (friend && props.userSession.current) {
+              Alert.alert(
+                'Remove Friend?',
+                '',
+                [
+                  {
+                    text: 'Ok', onPress: (() => {
+                      deleteFriend(friend.username, props.userSession.current, props).then(() => {
+                        loadFriends(props).then(() => {
+                        });
+                      });
+                    })
+                  },
+                  { text: 'Cancel', onPress: (() => { }) },
+                ],
+                { cancelable: false },
+              );
+            }
+          }}>
+            <View style={{ marginLeft: 5, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+              <Image
+                source={{ uri: friend.profilePictureUrl }}
+                style={{
+                  width: imageSideLength,
+                  height: imageSideLength,
+                  borderRadius: imageSideLength / 2,
+                  marginLeft: 10,
+                  borderWidth: 0.5,
+                  borderColor: 'grey'
+                }}
+              />
+              <View style={{ height: imageSideLength, marginLeft: 20, marginTop: 10, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
+                <Text style={[styles.text, { fontSize: 20 }]}>{friend.firstName} {friend.lastName}</Text>
+                {vehicle &&
+                  <Text style={[styles.textSecondary, { fontSize: 15, marginTop: 2 }]}>{vehicle.modelYear} {vehicleMake} {vehicle.modelName}</Text>
+                }
+              </View>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
         );
       });
 
